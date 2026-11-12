@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Avanna | TechBoston Portal</title>
+  <style>
+    :root {
+      --bg-color: #09090b;
+      --card-bg: #121215;
+      --card-hover: #1a1a1f;
+      --border-color: #27272a;
+      --border-hover: #3f3f46;
+      --text-main: #fafafa;
+      --text-muted: #a1a1aa;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 1.5rem;
+      line-height: 1.5;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 960px;
+    }
+
+    /* Header Section */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-top: 0.25rem;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    #clock {
+      font-variant-numeric: tabular-nums;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      background: var(--card-bg);
+      padding: 0.5rem 0.9rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    /* Buttons */
+    button {
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background-color: var(--text-main);
+      color: var(--bg-color);
+      padding: 0.55rem 1.1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-primary:hover {
+      background-color: #e4e4e7;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+      padding: 0.55rem 1rem;
+    }
+
+    .btn-secondary:hover {
+      color: var(--text-main);
+      border-color: var(--border-hover);
+    }
+
+    /* Grid & Cards */
+    .section-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      position: relative;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+
+    .card:hover {
+      background-color: var(--card-hover);
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-tag {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: #1f1f23;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .delete-btn {
+      position: absolute;
+      top: 0.9rem;
+      right: 0.9rem;
+      background: transparent;
+      color: var(--text-muted);
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      font-size: 1rem;
+    }
+
+    .card:hover .delete-btn {
+      opacity: 1;
+    }
+
+    .delete-btn:hover {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+    }
+
+    /* Add Site Placeholder Card */
+    .add-card {
+      border: 1px dashed var(--border-color);
+      background: transparent;
+      align-items: center;
+      justify-content: center;
+      min-height: 130px;
+      color: var(--text-muted);
+      cursor: pointer;
+      gap: 0.5rem;
+    }
+
+    .add-card:hover {
+      border-color: var(--text-muted);
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 50;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 420px;
+      padding: 1.5rem;
+    }
+
+    .modal h2 {
+      font-size: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.65rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .form-group input:focus {
+      border-color: var(--accent);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    footer {
+      margin-top: auto;
+      padding-top: 4rem;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div>
+        <span class="badge">TechBoston Academy</span>
+        <h1>Avanna's Hub</h1>
+        <p class="subtitle">Personal dashboard &amp; quick-access site directory.</p>
+      </div>
+      <div class="header-actions">
+        <div id="clock">--:--</div>
+        <button class="btn-primary" onclick="openModal()">+ Add Site</button>
+      </div>
+    </header>
+
+    <main>
+      <div class="section-title">Saved Sites</div>
+      <div class="grid" id="sitesGrid">
+        <!-- Cards are generated by JavaScript below -->
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    Built by Avanna &bull; TechBoston Academy
+  </footer>
+
+  <!-- Modal for adding a new site -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOutside(event)">
+    <div class="modal">
+      <h2>Add a New Site</h2>
+      <form id="addSiteForm" onsubmit="handleAddSite(event)">
+        <div class="form-group">
+          <label for="siteName">Site Name</label>
+          <input type="text" id="siteName" placeholder="e.g., Google Classroom" required />
+        </div>
+        <div class="form-group">
+          <label for="siteUrl">URL</label>
+          <input type="text" id="siteUrl" placeholder="e.g., classroom.google.com" required />
+        </div>
+        <div class="form-group">
+          <label for="siteCategory">Category / Tag</label>
+          <input type="text" id="siteCategory" placeholder="e.g., School, Coding, Project" />
+        </div>
+        <div class="form-group">
+          <label for="siteDesc">Short Description (Optional)</label>
+          <input type="text" id="siteDesc" placeholder="Assignments and class updates" />
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="btn-primary">Save Site</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Default starter sites (You can edit these directly in code or through the UI)
+    const defaultSites = [
+      {
+        name: "TechBoston Academy",
+        url: "https://www.bostonpublicschools.org/techboston",
+        category: "School",
+        desc: "Official school portal, news, and student resources."
+      },
+      {
+        name: "Google Classroom",
+        url: "https://classroom.google.com",
+        category: "Academics",
+        desc: "Coursework, assignments, and teacher announcements."
+      },
+      {
+        name: "GitHub",
+        url: "https://github.com",
+        category: "Dev",
+        desc: "Code repositories and web development projects."
+      }
+    ];
+
+    // Load saved sites from browser storage, or use defaults
+    let sites = JSON.parse(localStorage.getItem("avanna_sites")) || defaultSites;
+
+    const grid = document.getElementById("sitesGrid");
+    const modal = document.getElementById("modalOverlay");
+
+    function renderSites() {
+      grid.innerHTML = "";
+
+      sites.forEach((site, index) => {
+        const card = document.createElement("a");
+        card.className = "card";
+        card.href = site.url;
+        card.target = "_blank";
+        card.rel = "noopener noreferrer";
+
+        card.innerHTML = `
+          <div>
+            <div class="card-header">
+              <span class="card-tag">${escapeHtml(site.category || "Link")}</span>
+            </div>
+            <div class="card-title">${escapeHtml(site.name)}</div>
+            <div class="card-desc">${escapeHtml(site.desc || site.url)}</div>
+          </div>
+          <button class="delete-btn" title="Remove site" onclick="deleteSite(event, ${index})">&times;</button>
+        `;
+
+        grid.appendChild(card);
+      });
+
+      // Add the "+ Add New Site" dashed card at the end
+      const addCard = document.createElement("div");
+      addCard.className = "card add-card";
+      addCard.onclick = openModal;
+      addCard.innerHTML = `
+        <span style="font-size: 1.5rem; line-height: 1;">+</span>
+        <span style="font-size: 0.9rem; font-weight: 500;">Add a site</span>
+      `;
+      grid.appendChild(addCard);
+    }
+
+    function handleAddSite(e) {
+      e.preventDefault();
+      const name = document.getElementById("siteName").value.trim();
+      let url = document.getElementById("siteUrl").value.trim();
+      const category = document.getElementById("siteCategory").value.trim() || "General";
+      const desc = document.getElementById("siteDesc").value.trim();
+
+      // Automatically add https:// if missing
+      if (!/^https?:\/\//i.test(url)) {
+        url = "https://" + url;
+      }
+
+      sites.push({ name, url, category, desc });
+      saveAndRender();
+      document.getElementById("addSiteForm").reset();
+      closeModal();
+    }
+
+    function deleteSite(e, index) {
+      e.preventDefault();
+      e.stopPropagation();
+      sites.splice(index, 1);
+      saveAndRender();
+    }
+
+    function saveAndRender() {
+      localStorage.setItem("avanna_sites", JSON.stringify(sites));
+      renderSites();
+    }
+
+    function openModal() {
+      modal.classList.add("active");
+      document.getElementById("siteName").focus();
+    }
+
+    function closeModal() {
+      modal.classList.remove("active");
+    }
+
+    function closeModalOnOutside(e) {
+      if (e.target === modal) closeModal();
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement("div");
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // Live Clock
+    function updateClock() {
+      const now = new Date();
+      document.getElementById("clock").textContent = now.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+    renderSites();
+  </script>
+</body>
+</html>
