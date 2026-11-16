@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Harlem Renaissance — Interactive Vintage Archive & Simulation</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tone.js for procedural Jazz Lounge ambience -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <!-- Google Fonts: Vintage Serif (Playfair Display & Fraunces), Clean Sans (Plus Jakarta Sans), and Typewriter (Courier Prime) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        crimson: '#a83c32',
+                        skyvintage: '#9de7f2',
+                        orchid: '#d39df2',
+                        chartreuse: '#e5f29d',
+                        parchment: '#f9f5eb',
+                        ink: '#1c1917',
+                        sepia: '#e8dec8'
+                    },
+                    fontFamily: {
+                        serif: ['Fraunces', 'Georgia', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['Courier Prime', 'monospace'],
+                    },
+                    boxShadow: {
+                        'hard': '6px 6px 0px 0px #1c1917',
+                        'hard-sm': '3px 3px 0px 0px #1c1917',
+                        'hard-lg': '10px 10px 0px 0px #1c1917',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Vintage Maximalist Styling & Textures */
+        body {
+            background-color: #f9f5eb;
+            color: #1c1917;
+            background-image: 
+                radial-gradient(#1c1917 0.75px, transparent 0.75px),
+                radial-gradient(#a83c32 0.75px, #f9f5eb 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            overflow-x: hidden;
+        }
+
+        /* Subtle vintage paper grain overlay */
+        .paper-texture {
+            background-color: #f9f5eb;
+            background-image: linear-gradient(to right, rgba(28, 25, 23, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(28, 25, 23, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* Art Deco Geometric Border Pattern */
+        .art-deco-border {
+            border: 3px solid #1c1917;
+            position: relative;
+        }
+        .art-deco-border::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            bottom: 4px;
+            border: 1px solid #1c1917;
+            pointer-events: none;
+            border-radius: inherit;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e8dec8;
+            border-left: 2px solid #1c1917;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #a83c32;
+            border: 2px solid #1c1917;
+            border-radius: 6px;
+        }
+
+        /* Tab Transition & Hover Effects */
+        .tab-btn {
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .tab-btn:hover {
+            transform: translate(-2px, -2px);
+        }
+        .tab-btn.active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px #1c1917;
+        }
+
+        /* Animated Vinyl Record */
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .spin-vinyl {
+            animation: spinSlow 8s linear infinite;
+        }
+        .spin-paused {
+            animation-play-state: paused;
+        }
+
+        /* Fade in animation for content switches */
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-entry {
+            animation: fadeSlideUp 0.4s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased selection:bg-crimson selection:text-parchment pb-16">
+
+    <!-- Top Marquee Banner -->
+    <div class="bg-ink text-chartreuse border-b-4 border-crimson py-2 px-4 overflow-hidden whitespace-nowrap font-mono text-xs sm:text-sm tracking-widest uppercase">
+        <div class="inline-block animate-pulse">
+            ★ HARLEM, NEW YORK • CIRCA 1918–1937 • THE NEW NEGRO MOVEMENT • ART • LITERATURE • JAZZ • ACTIVISM • COMMUNITY EMPOWERMENT ★
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10">
+
+        <!-- Header / Masthead (Vintage Broadsheet Style) -->
+        <header class="paper-texture art-deco-border rounded-2xl p-6 sm:p-8 shadow-hard-lg mb-8 bg-parchment relative overflow-hidden">
+            <!-- Decorative Corner Accents -->
+            <div class="hidden sm:block absolute -top-6 -right-6 w-24 h-24 rounded-full bg-orchid border-4 border-ink opacity-80"></div>
+            <div class="hidden sm:block absolute -bottom-8 -left-8 w-28 h-28 rounded-full bg-skyvintage border-4 border-ink opacity-80"></div>
+
+            <div class="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+                <div>
+                    <div class="inline-flex items-center gap-2 bg-crimson text-parchment px-3 py-1 rounded-full border-2 border-ink font-mono text-xs font-bold uppercase tracking-wider mb-3 shadow-hard-sm">
+                        <span>Interactive Cultural Simulation</span>
+                        <span>•</span>
+                        <span>Vol. IV</span>
+                    </div>
+                    <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-ink leading-none">
+                        THE HARLEM RENAISSANCE
+                    </h1>
+                    <p class="font-serif italic text-lg sm:text-xl text-stone-700 mt-2 max-w-2xl">
+                        Explore the visionaries, writers, organizers, and artists who transformed 135th Street into the cultural capital of the Black world.
+                    </p>
+                </div>
+
+                <!-- Interactive Jazz Lounge Soundscape Controller & Ripple Counter -->
+                <div class="flex flex-col sm:flex-row lg:flex-col gap-3 w-full lg:w-auto shrink-0">
+                    <!-- Soundscape Box -->
+                    <div class="bg-chartreuse border-3 border-ink rounded-xl p-3 shadow-hard-sm flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <!-- Vinyl SVG Icon -->
+                            <div id="vinyl-disc" class="w-10 h-10 rounded-full bg-ink border-2 border-ink flex items-center justify-center spin-vinyl spin-paused shrink-0">
+                                <div class="w-4 h-4 rounded-full bg-crimson border border-parchment flex items-center justify-center">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-parchment"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="font-mono text-xs font-bold uppercase text-ink">Savoy Ballroom Audio</div>
+                                <div id="audio-status" class="text-xs font-semibold text-stone-700">Click to play 1920s Blues</div>
+                            </div>
+                        </div>
+                        <button id="toggle-audio-btn" onclick="toggleJazzAudio()" class="bg-crimson hover:bg-red-800 text-parchment font-mono text-xs font-bold px-3 py-2 rounded-lg border-2 border-ink shadow-hard-sm active:translate-y-0.5 transition">
+                            PLAY
+                        </button>
+                    </div>
+
+                    <!-- Simulation Progress Tracker -->
+                    <div class="bg-skyvintage border-3 border-ink rounded-xl px-4 py-2 shadow-hard-sm flex items-center justify-between gap-3">
+                        <span class="font-mono text-xs font-bold uppercase">Archives Explored:</span>
+                        <span id="explored-counter" class="font-serif font-black text-base bg-parchment px-2.5 py-0.5 rounded-md border-2 border-ink">1 / 6</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Era Filter & Simulation Mode Bar -->
+        <section class="mb-6 flex flex-wrap items-center justify-between gap-4 bg-orchid/40 border-3 border-ink rounded-2xl p-4 shadow-hard-sm">
+            <div class="flex flex-wrap items-center gap-2">
+                <span class="font-mono text-xs font-bold uppercase tracking-wider mr-2 bg-ink text-parchment px-2.5 py-1 rounded-md">Filter by Discipline:</span>
+                <button onclick="filterFigures('all')" data-filter="all" class="filter-btn bg-ink text-chartreuse font-mono text-xs font-bold px-3 py-1.5 rounded-lg border-2 border-ink transition">All Figures (6)</button>
+                <button onclick="filterFigures('Activism & Thought')" data-filter="Activism & Thought" class="filter-btn bg-parchment text-ink hover:bg-chartreuse font-mono text-xs font-bold px-3 py-1.5 rounded-lg border-2 border-ink transition">Activism & Thought</button>
+                <button onclick="filterFigures('Literature & Poetry')" data-filter="Literature & Poetry" class="filter-btn bg-parchment text-ink hover:bg-skyvintage font-mono text-xs font-bold px-3 py-1.5 rounded-lg border-2 border-ink transition">Literature & Poetry</button>
+                <button onclick="filterFigures('Music & Performance')" data-filter="Music & Performance" class="filter-btn bg-parchment text-ink hover:bg-orchid font-mono text-xs font-bold px-3 py-1.5 rounded-lg border-2 border-ink transition">Music & Performance</button>
+            </div>
+
+            <button onclick="openImpactNetworkModal()" class="bg-crimson text-parchment hover:bg-red-800 font-mono text-xs font-bold px-4 py-2 rounded-xl border-2 border-ink shadow-hard-sm flex items-center gap-2 transition">
+                <span>✦ VIEW COMMUNITY RIPPLE SIMULATION</span>
+            </button>
+        </section>
+
+        <!-- Interactive Figure Tabs Navigation -->
+        <nav aria-label="Harlem Renaissance Figures" class="mb-8">
+            <div id="tabs-container" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                <!-- Tabs injected dynamically via JavaScript -->
+            </div>
+        </nav>
+
+        <!-- Main Interactive Dossier / Simulation Stage -->
+        <main id="dossier-stage" class="animate-entry">
+            <!-- Active Figure Content Injected Here -->
+        </main>
+
+        <!-- Interactive Timeline & Street Scene Simulation Strip -->
+        <section class="mt-12 paper-texture border-4 border-ink rounded-2xl p-6 sm:p-8 shadow-hard bg-parchment">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-3 border-ink pb-4 mb-6">
+                <div>
+                    <span class="font-mono text-xs font-bold uppercase bg-skyvintage px-2.5 py-1 rounded border-2 border-ink">Interactive Historical Pulse</span>
+                    <h2 class="font-serif text-2xl sm:text-3xl font-black mt-2">Simulate Key Moments on 135th Street</h2>
+                </div>
+                <p class="font-mono text-xs text-stone-700 max-w-md">
+                    Click any historical milestone below to see how these leaders' work intersected in real time.
+                </p>
+            </div>
+
+            <div id="timeline-events" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- Timeline buttons generated by JS -->
+            </div>
+
+            <div id="timeline-display" class="mt-6 bg-chartreuse/60 border-3 border-ink rounded-xl p-5 shadow-hard-sm">
+                <!-- Active timeline detail -->
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Modal for Community Ripple Effect Simulation (Replaces any alert/popup needs) -->
+    <div id="ripple-modal" class="fixed inset-0 bg-ink/75 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-parchment border-4 border-ink rounded-2xl max-w-3xl w-full p-6 sm:p-8 shadow-hard-lg relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeImpactNetworkModal()" class="absolute top-4 right-4 bg-crimson text-parchment font-mono font-bold px-3 py-1 rounded-lg border-2 border-ink shadow-hard-sm hover:bg-red-800">
+                ✕ CLOSE
+            </button>
+            <div class="inline-block bg-orchid border-2 border-ink px-3 py-1 rounded-full font-mono text-xs font-bold uppercase mb-2">
+                Collective Impact Simulator
+            </div>
+            <h2 class="font-serif text-3xl font-black text-ink mb-2">How Harlem Lifted the World</h2>
+            <p class="text-sm text-stone-700 mb-6">
+                Select a foundational pillar below to simulate how the contributions of Garvey, Coleman, Du Bois, Hughes, Hurston, and Ellington empowered everyday people across generations.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+                <button onclick="simulateRipple('economic')" class="ripple-pill bg-chartreuse border-2 border-ink rounded-xl p-3 text-left font-serif font-bold shadow-hard-sm hover:-translate-y-0.5 transition">
+                    1. Economic Self-Reliance
+                </button>
+                <button onclick="simulateRipple('literary')" class="ripple-pill bg-skyvintage border-2 border-ink rounded-xl p-3 text-left font-serif font-bold shadow-hard-sm hover:-translate-y-0.5 transition">
+                    2. Literary & Cultural Voice
+                </button>
+                <button onclick="simulateRipple('civil')" class="ripple-pill bg-orchid border-2 border-ink rounded-xl p-3 text-left font-serif font-bold shadow-hard-sm hover:-translate-y-0.5 transition">
+                    3. Civil Rights & Pride
+                </button>
+            </div>
+
+            <div id="ripple-output" class="bg-white border-3 border-ink rounded-xl p-5 shadow-hard-sm">
+                <!-- Dynamic simulation result -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Embedded JavaScript Application Logic -->
+    <script>
+        /**
+         * Comprehensive Historical Dataset for the Harlem Renaissance Simulation
+         * Using the user's signature palette:
+         * #a83c32 (Crimson), #9de7f2 (Sky Vintage), #d39df2 (Orchid), #e5f29d (Chartreuse)
+         */
+        const figuresData = [
+            {
+                id: 'garvey',
+                name: 'Marcus Garvey',
+                years: '1887 – 1940',
+                role: 'Pan-Africanist Leader & Organizer',
+                category: 'Activism & Thought',
+                accentColor: '#a83c32', // Crimson
+                badgeBg: 'bg-crimson text-parchment',
+                cardTint: 'bg-crimson/10',
+                quote: "Up, you mighty race, accomplish what you will!",
+                location: 'Liberty Hall, 138th Street, Harlem',
+                portraitSvg: `
+                    <svg viewBox="0 0 200 200" class="w-full h-full">
+                        <rect width="200" height="200" fill="#e5f29d"/>
+                        <circle cx="100" cy="100" r="82" fill="#a83c32" stroke="#1c1917" stroke-width="4"/>
+                        <!-- Stylized Vintage Portrait Silhouette & Uniform Details -->
+                        <path d="M55 180 C55 135, 145 135, 145 180 Z" fill="#1c1917"/>
+                        <path d="M75 140 L100 165 L125 140" fill="none" stroke="#e5f29d" stroke-width="4"/>
+                        <circle cx="100" cy="92" r="34" fill="#5c3a21" stroke="#1c1917" stroke-width="3"/>
+                        <!-- Iconic Plumed Hat / Bicorne Silhouette -->
+                        <path d="M48 72 Q100 32 152 72 Q100 62 48 72 Z" fill="#1c1917"/>
+                        <path d="M85 45 Q105 20 130 42" fill="none" stroke="#9de7f2" stroke-width="5" stroke-linecap="round"/>
+                        <!-- Glasses / Mustache -->
+                        <path d="M86 105 Q100 100 114 105" stroke="#1c1917" stroke-width="3" fill="none"/>
+                        <circle cx="88" cy="88" r="5" fill="#1c1917"/>
+                        <circle cx="112" cy="88" r="5" fill="#1c1917"/>
+                    </svg>
+                `,
+                biography: [
+                    "Born in St. Ann's Bay, Jamaica, Marcus Mosiah Garvey traveled across Central America and London before arriving in Harlem in 1916. Witnessing systemic oppression worldwide, he founded the Universal Negro Improvement Association (UNIA) in 1914 and established its global headquarters in Harlem.",
+                    "From Liberty Hall on West 138th Street, Garvey organized massive parades, published the internationally circulated newspaper 'The Negro World,' and launched the Black Star Line steamship corporation to foster global Black trade and connection."
+                ],
+                contributions: [
+                    "Founded the UNIA, growing it into the largest mass movement of people of African descent in history with millions of members.",
+                    "Established 'The Negro World' newspaper, printed in English, French, and Spanish, spreading Harlem's ideas across the globe.",
+                    "Created Black-owned businesses including the Negro Factories Corporation and the Black Star Line to prove economic independence."
+                ],
+                howItHelpedOthers: [
+                    "Instilled deep racial pride and self-worth in working-class Black families at a time when mainstream society demeaned Black identity.",
+                    "Provided tangible jobs, cooperative business training, and community mutual aid through local UNIA chapters.",
+                    "Directly inspired future Civil Rights and anti-colonial leaders worldwide, including Malcolm X's parents, Kwame Nkrumah, and Dr. Martin Luther King Jr."
+                ],
+                interactivePrompt: {
+                    question: "Simulate a Liberty Hall Speech: What was Garvey's core message to Harlem residents?",
+                    options: [
+                        { label: "Economic Self-Reliance & Pride", response: "Correct! Garvey urged Harlem residents to build their own businesses, support Black enterprises, and take pride in their African heritage." },
+                        { label: "Waiting for Political Favors", response: "Not quite—Garvey emphasized immediate self-determination, independent institutions, and global solidarity rather than waiting on outside institutions." }
+                    ]
+                }
+            },
+            {
+                id: 'coleman',
+                name: 'Anita Scott Coleman',
+                years: '1890 – 1960',
+                role: 'Short Story Writer, Poet & Essayist',
+                category: 'Literature & Poetry',
+                accentColor: '#d39df2', // Orchid
+                badgeBg: 'bg-orchid text-ink',
+                cardTint: 'bg-orchid/20',
+                quote: "To be a writer is to hold a lantern up to the quiet courage of everyday lives.",
+                location: 'Published in The Crisis & Opportunity (Harlem)',
+                portraitSvg: `
+                    <svg viewBox="0 0 200 200" class="w-full h-full">
+                        <rect width="200" height="200" fill="#9de7f2"/>
+                        <circle cx="100" cy="100" r="82" fill="#d39df2" stroke="#1c1917" stroke-width="4"/>
+                        <!-- 1920s Cloche Hat & Literary Motif -->
+                        <path d="M55 180 C60 135, 140 135, 145 180 Z" fill="#a83c32" stroke="#1c1917" stroke-width="3"/>
+                        <circle cx="100" cy="95" r="33" fill="#7c4d2b" stroke="#1c1917" stroke-width="3"/>
+                        <!-- 1920s Cloche Hat -->
+                        <path d="M64 88 C64 52, 136 52, 136 88 Z" fill="#1c1917"/>
+                        <rect x="62" y="82" width="76" height="8" rx="4" fill="#e5f29d" stroke="#1c1917" stroke-width="2"/>
+                        <circle cx="89" cy="96" r="4" fill="#1c1917"/>
+                        <circle cx="111" cy="96" r="4" fill="#1c1917"/>
+                        <path d="M93 110 Q100 116 107 110" stroke="#1c1917" stroke-width="2.5" fill="none"/>
+                    </svg>
+                `,
+                biography: [
+                    "Born in Guaymas, Mexico, and raised on a ranch in Silver City, New Mexico, Anita Scott Coleman became one of the Harlem Renaissance's most vital voices bridging the American Southwest with Harlem's literary journals.",
+                    "A trained teacher and mother of four, she wrote fiercely empathetic short stories, essays, and poems that appeared regularly in 'The Crisis' and 'Opportunity,' winning major literary prizes in the 1920s."
+                ],
+                contributions: [
+                    "Published acclaimed short stories like 'Three Dogs and a Rabbit' and 'The Brat,' bringing Black Western and rural experiences into the Harlem Renaissance canon.",
+                    "Won prestigious awards from 'Opportunity' magazine, proving that Black women outside New York City were central architects of the New Negro Movement.",
+                    "Authored essays advocating for education, motherhood, and dismantling racial and gender stereotypes in American publishing."
+                ],
+                howItHelpedOthers: [
+                    "Expanded the Harlem Renaissance beyond Manhattan, inspiring Black writers in rural and Western communities to tell their own authentic stories.",
+                    "Created nuanced, dignified portraits of Black mothers, workers, and children, countering harmful caricatures in mainstream media.",
+                    "Mentored young readers and students through her dual career as an educator and published author."
+                ],
+                interactivePrompt: {
+                    question: "Explore Anita Scott Coleman's Literary Lens: How did she expand the Harlem Renaissance?",
+                    options: [
+                        { label: "Connecting the Southwest to Harlem", response: "Spot on! Coleman proved the Harlem Renaissance was a national movement by publishing stories of Black life in the American Southwest inside Harlem's top magazines." },
+                        { label: "Writing Only Jazz Lyrics", response: "Actually, Coleman specialized in short fiction, poetry, and social essays celebrating family resilience and rural Black life." }
+                    ]
+                }
+            },
+            {
+                id: 'dubois',
+                name: 'W.E.B. Du Bois',
+                years: '1868 – 1963',
+                role: 'Sociologist, Editor & Civil Rights Architect',
+                category: 'Activism & Thought',
+                accentColor: '#9de7f2', // Sky Vintage
+                badgeBg: 'bg-skyvintage text-ink',
+                cardTint: 'bg-skyvintage/25',
+                quote: "All Art is propaganda and ever must be, despite the wailing of the purists.",
+                location: '70 Fifth Avenue & Harlem NAACP Offices',
+                portraitSvg: `
+                    <svg viewBox="0 0 200 200" class="w-full h-full">
+                        <rect width="200" height="200" fill="#d39df2"/>
+                        <circle cx="100" cy="100" r="82" fill="#9de7f2" stroke="#1c1917" stroke-width="4"/>
+                        <!-- Suit & Bowtie -->
+                        <path d="M52 180 C55 135, 145 135, 148 180 Z" fill="#1c1917"/>
+                        <polygon points="100,142 88,136 88,148" fill="#a83c32"/>
+                        <polygon points="100,142 112,136 112,148" fill="#a83c32"/>
+                        <!-- Head & Iconic Goatee + Spectacles -->
+                        <circle cx="100" cy="92" r="33" fill="#8d5b3c" stroke="#1c1917" stroke-width="3"/>
+                        <circle cx="88" cy="88" r="8" fill="none" stroke="#1c1917" stroke-width="2.5"/>
+                        <circle cx="112" cy="88" r="8" fill="none" stroke="#1c1917" stroke-width="2.5"/>
+                        <line x1="96" y1="88" x2="104" y2="88" stroke="#1c1917" stroke-width="2.5"/>
+                        <path d="M93 112 L100 124 L107 112 Z" fill="#1c1917"/>
+                    </svg>
+                `,
+                biography: [
+                    "Born in Great Barrington, Massachusetts, William Edward Burghardt Du Bois became the first African American to earn a Ph.D. from Harvard University. As a co-founder of the NAACP and editor of its magazine 'The Crisis,' he served as the intellectual engine of the Harlem Renaissance.",
+                    "Through 'The Crisis,' Du Bois provided the primary publishing platform that launched the careers of Langston Hughes, Countee Cullen, Anita Scott Coleman, and dozens of young visual artists."
+                ],
+                contributions: [
+                    "Edited 'The Crisis,' growing its circulation to over 100,000 readers and publishing groundbreaking Black poetry, fiction, and visual art.",
+                    "Created 'The Brownies' Book' (1920), the first magazine specifically designed for African American children to learn their history and see themselves celebrated.",
+                    "Authored 'The Souls of Black Folk,' introducing foundational concepts like 'double consciousness' that shaped modern sociology and art."
+                ],
+                howItHelpedOthers: [
+                    "Gave young, unknown Black writers and illustrators their very first paid national publications and literary awards.",
+                    "Protected Black children's self-esteem through 'The Brownies' Book,' offering positive stories, games, and biographies of Black heroes.",
+                    "Used art and scholarship as direct legal and political tools to fight lynching, segregation, and disenfranchisement."
+                ],
+                interactivePrompt: {
+                    question: "Inside 'The Crisis' Editorial Desk: How did Du Bois empower emerging artists?",
+                    options: [
+                        { label: "Publishing & Funding New Voices", response: "Exactly! Du Bois turned 'The Crisis' into a launchpad, publishing debut works by young writers and sponsoring annual literary prizes." },
+                        { label: "Restricting Art to Europe", response: "No—Du Bois championed Black American folk culture, spirituals, and Harlem's own creative community." }
+                    ]
+                }
+            },
+            {
+                id: 'hughes',
+                name: 'Langston Hughes',
+                years: '1901 – 1967',
+                role: 'Poet Laureate of Harlem & Playwright',
+                category: 'Literature & Poetry',
+                accentColor: '#e5f29d', // Chartreuse
+                badgeBg: 'bg-chartreuse text-ink',
+                cardTint: 'bg-chartreuse/30',
+                quote: "Hold fast to dreams, for if dreams die, life is a broken-winged bird that cannot fly.",
+                location: '20 East 127th Street, Harlem',
+                portraitSvg: `
+                    <svg viewBox="0 0 200 200" class="w-full h-full">
+                        <rect width="200" height="200" fill="#a83c32"/>
+                        <circle cx="100" cy="100" r="82" fill="#e5f29d" stroke="#1c1917" stroke-width="4"/>
+                        <path d="M55 180 C58 135, 142 135, 145 180 Z" fill="#1c1917"/>
+                        <path d="M88 138 L100 155 L112 138" fill="#9de7f2"/>
+                        <circle cx="100" cy="92" r="33" fill="#9c6b43" stroke="#1c1917" stroke-width="3"/>
+                        <path d="M70 80 Q100 55 130 80 Q125 60 100 60 Q75 60 70 80 Z" fill="#1c1917"/>
+                        <circle cx="89" cy="90" r="4" fill="#1c1917"/>
+                        <circle cx="111" cy="90" r="4" fill="#1c1917"/>
+                        <path d="M88 106 Q100 116 112 106" stroke="#1c1917" stroke-width="3" fill="none"/>
+                    </svg>
+                `,
+                biography: [
+                    "Born in Joplin, Missouri, James Mercer Langston Hughes published his signature poem 'The Negro Speaks of Rivers' in 'The Crisis' at age 19. Moving to Harlem in 1921, he became the quintessential chronicler of everyday Black urban life.",
+                    "Rather than imitating European poetic forms, Hughes infused his verse with the syncopated rhythms of blues and jazz, capturing the humor, struggle, and resilience of ordinary working people."
+                ],
+                contributions: [
+                    "Pioneered 'Jazz Poetry,' blending musical improvisation and vernacular speech into celebrated collections like 'The Weary Blues' (1926).",
+                    "Wrote the manifesto 'The Negro Artist and the Racial Mountain,' urging Black creators to embrace their authentic culture without fear.",
+                    "Founded the Harlem Suitcase Theater, staging accessible, community-centered plays."
+                ],
+                howItHelpedOthers: [
+                    "Validated the everyday language, music, and lives of working-class Black Americans as worthy of high art.",
+                    "Freed generations of younger poets from feeling pressured to assimilate into Eurocentric literary standards.",
+                    "Created affordable community theater in Harlem so local families could experience live drama."
+                ],
+                interactivePrompt: {
+                    question: "Rhythm of 125th Street: What musical form shaped Langston Hughes's poetry?",
+                    options: [
+                        { label: "Jazz & Blues Syncopation", response: "Yes! Hughes structured his stanzas around 12-bar blues rhythms and bebop/jazz phrasing heard in Harlem clubs." },
+                        { label: "Baroque Harpsichord", response: "Not quite—Hughes drew directly from Lenox Avenue jazz clubs and Southern blues traditions." }
+                    ]
+                }
+            },
+            {
+                id: 'hurston',
+                name: 'Zora Neale Hurston',
+                years: '1891 – 1960',
+                role: 'Novelist, Folklorist & Anthropologist',
+                category: 'Literature & Poetry',
+                accentColor: '#a83c32',
+                badgeBg: 'bg-crimson text-parchment',
+                cardTint: 'bg-crimson/10',
+                quote: "There are years that ask questions and years that answer.",
+                location: 'Barnard College & Strivers’ Row, Harlem',
+                portraitSvg: `
+                    <svg viewBox="0 0 200 200" class="w-full h-full">
+                        <rect width="200" height="200" fill="#d39df2"/>
+                        <circle cx="100" cy="100" r="82" fill="#e5f29d" stroke="#1c1917" stroke-width="4"/>
+                        <path d="M55 180 C60 135, 140 135, 145 180 Z" fill="#1c1917"/>
+                        <circle cx="100" cy="95" r="33" fill="#6e4226" stroke="#1c1917" stroke-width="3"/>
+                        <!-- Stylish Wide Brim Hat tilted -->
+                        <ellipse cx="102" cy="70" rx="52" ry="14" transform="rotate(-10 102 70)" fill="#a83c32" stroke="#1c1917" stroke-width="3"/>
+                        <circle cx="89" cy="94" r="4" fill="#1c1917"/>
+                        <circle cx="111" cy="94" r="4" fill="#1c1917"/>
+                        <path d="M88 109 Q100 118 112 109" stroke="#1c1917" stroke-width="3" fill="none"/>
+                    </svg>
+                `,
+                biography: [
+                    "Raised in Eatonville, Florida—the first incorporated all-Black town in the United States—Zora Neale Hurston arrived in Harlem in 1925 with $1.50 in her pocket and boundless creative energy.",
+                    "As the first Black student at Barnard College, she trained in anthropology under Franz Boas while co-founding the daring literary magazine 'Fire!!' alongside Langston Hughes and Wallace Thurman."
+                ],
+                contributions: [
+                    "Collected and preserved Southern Black folklore, oral histories, spirituals, and hoodoo traditions in 'Mules and Men' (1935).",
+                    "Wrote the literary masterpiece 'Their Eyes Were Watching God' (1937), celebrated for its poetic use of Southern dialect and feminist self-discovery.",
+                    "Co-founded 'Fire!!,' a bold magazine dedicated to younger Harlem artists expressing unfiltered Black life."
+                ],
+                howItHelpedOthers: [
+                    "Preserved priceless oral histories, songs, and folk tales of formerly enslaved people and rural communities before they were lost.",
+                    "Empowered Black women writers—including Alice Walker and Toni Morrison—by centering a Black woman's voice, joy, and independence.",
+                    "Proved that Black vernacular speech possessed extraordinary literary beauty and philosophical depth."
+                ],
+                interactivePrompt: {
+                    question: "Preserving Heritage: How did Hurston's anthropology background enrich the Renaissance?",
+                    options: [
+                        { label: "Documenting Southern Oral Folklore", response: "Correct! Hurston traveled across the South and Caribbean recording songs, stories, and traditions to keep ancestral wisdom alive." },
+                        { label: "Focusing Only on Wall Street", response: "No—Hurston championed rural Southern communities and Eatonville's self-governing spirit." }
+                    ]
+                }
+            },
+            {
+                id: 'ellington',
+                name: 'Duke Ellington',
+                years: '1899 – 1974',
+                role: 'Composer, Pianist & Big Band Leader',
+                category: 'Music & Performance',
+                accentColor: '#9de7f2',
+                badgeBg: 'bg-skyvintage text-ink',
+                cardTint: 'bg-skyvintage/25',
+                quote: "Music is my mistress, and she plays second fiddle to no one.",
+                location: 'The Cotton Club, 142nd St & Lenox Ave',
+                portraitSvg: `
+                    <svg viewBox="0 0 200 200" class="w-full h-full">
+                        <rect width="200" height="200" fill="#e5f29d"/>
+                        <circle cx="100" cy="100" r="82" fill="#9de7f2" stroke="#1c1917" stroke-width="4"/>
+                        <!-- Tuxedo -->
+                        <path d="M52 180 C55 135, 145 135, 148 180 Z" fill="#1c1917"/>
+                        <polygon points="100,138 92,165 108,165" fill="#f9f5eb"/>
+                        <circle cx="100" cy="92" r="33" fill="#7c4d2b" stroke="#1c1917" stroke-width="3"/>
+                        <path d="M72 78 Q100 62 128 78" fill="none" stroke="#1c1917" stroke-width="8" stroke-linecap="round"/>
+                        <line x1="92" y1="106" x2="108" y2="106" stroke="#1c1917" stroke-width="3"/>
+                        <circle cx="89" cy="90" r="4" fill="#1c1917"/>
+                        <circle cx="111" cy="90" r="4" fill="#1c1917"/>
+                    </svg>
+                `,
+                biography: [
+                    "Born in Washington, D.C., Edward Kennedy 'Duke' Ellington moved to New York in 1923 and led his orchestra to fame during a legendary residency at Harlem's Cotton Club starting in 1927.",
+                    "Weekly radio broadcasts from Harlem carried Ellington's sophisticated orchestral jazz into millions of living rooms across America, transforming jazz into an internationally revered art form."
+                ],
+                contributions: [
+                    "Composed over 1,000 works—including 'Mood Indigo,' 'It Don't Mean a Thing,' and 'Take the A Train'—elevating jazz to symphonic complexity.",
+                    "Crafted compositions specifically tailored to the unique voices of his individual musicians, treating his orchestra as a collective community.",
+                    "Used national radio broadcasts from Harlem to break down cultural barriers across the United States."
+                ],
+                howItHelpedOthers: [
+                    "Provided steady, dignified employment and international fame for dozens of Black virtuoso musicians over five decades.",
+                    "Challenged racial prejudice nationwide by demonstrating unmatched compositional genius on live coast-to-coast radio.",
+                    "Used his concerts and musical suites (such as 'Black, Brown and Beige') to educate audiences on African American history and civil rights."
+                ],
+                interactivePrompt: {
+                    question: "Harlem Airwaves: How did Duke Ellington reach millions outside New York?",
+                    options: [
+                        { label: "Live Radio Broadcasts from Harlem", response: "Spot on! Nationwide radio broadcasts from Harlem clubs brought Ellington's orchestral jazz into homes across America." },
+                        { label: "Silent Film Intertitles Only", response: "Not quite—while he appeared in films, live network radio broadcasts made his Harlem orchestra a household sensation." }
+                    ]
+                }
+            }
+        ];
+
+        const timelineMilestones = [
+            {
+                year: '1919',
+                title: '369th "Harlem Hellfighters" Parade & UNIA Growth',
+                description: 'Returning Black WWI heroes march up Fifth Avenue into Harlem to cheering crowds, sparking a new era of civic pride. Simultaneously, Marcus Garvey’s Liberty Hall becomes a hub for Pan-African empowerment.'
+            },
+            {
+                year: '1920',
+                title: 'The Brownies’ Book & Literary Awakening',
+                description: 'W.E.B. Du Bois launches The Brownies’ Book for Black youth, while The Crisis and Opportunity begin publishing emerging voices like Anita Scott Coleman and Langston Hughes.'
+            },
+            {
+                year: '1926',
+                title: 'The Weary Blues & Fire!! Magazine',
+                description: 'Langston Hughes publishes his landmark jazz-infused collection, while Zora Neale Hurston and young peers launch Fire!! to champion fearless artistic freedom.'
+            },
+            {
+                year: '1927',
+                title: 'Duke Ellington’s Harlem Radio Broadcasts',
+                description: 'Duke Ellington’s orchestra begins broadcasting live from Harlem across North America, cementing Harlem as the global epicenter of modern music and nightlife.'
+            }
+        ];
+
+        // State Management
+        let activeFigureId = 'garvey';
+        let currentFilter = 'all';
+        let exploredIds = new Set(['garvey']);
+        let activeTimelineIdx = 0;
+
+        // Audio State (Tone.js)
+        let isAudioPlaying = false;
+        let jazzLoop = null;
+        let pianoSynth = null;
+        let bassSynth = null;
+
+        /**
+         * Initialize Application on DOMContentLoaded
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTabs();
+            renderFigureDossier(activeFigureId);
+            renderTimeline();
+            simulateRipple('economic');
+        });
+
+        /**
+         * Render Navigation Tabs for Figures
+         */
+        function renderTabs() {
+            const container = document.getElementById('tabs-container');
+            container.innerHTML = '';
+
+            const filtered = currentFilter === 'all' 
+                ? figuresData 
+                : figuresData.filter(f => f.category === currentFilter);
+
+            filtered.forEach(fig => {
+                const isSelected = fig.id === activeFigureId;
+                const isVisited = exploredIds.has(fig.id);
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.onclick = () => selectFigure(fig.id);
+                btn.className = `tab-btn text-left p-3 rounded-xl border-3 border-ink flex flex-col justify-between relative ${
+                    isSelected 
+                        ? 'active bg-ink text-parchment shadow-hard-sm' 
+                        : 'bg-parchment text-ink hover:bg-chartreuse/50 shadow-hard'
+                }`;
+
+                btn.innerHTML = `
+                    <div class="flex items-center justify-between w-full mb-1.5">
+                        <span class="w-3 h-3 rounded-full border border-ink" style="background-color: ${fig.accentColor}"></span>
+                        ${isVisited ? `<span class="font-mono text-[10px] px-1.5 py-0.2 rounded ${isSelected ? 'bg-chartreuse text-ink' : 'bg-sepia text-ink'} font-bold">✓ READ</span>` : ''}
+                    </div>
+                    <div class="font-serif font-bold text-sm sm:text-base leading-tight">${fig.name}</div>
+                    <div class="font-mono text-[11px] mt-1 opacity-80 truncate">${fig.years}</div>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        /**
+         * Select a Figure Tab and Update Simulation State
+         */
+        function selectFigure(id) {
+            activeFigureId = id;
+            exploredIds.add(id);
+            updateExploredCounter();
+            renderTabs();
+            renderFigureDossier(id);
+        }
+
+        /**
+         * Update Archive Progress Counter
+         */
+        function updateExploredCounter() {
+            const counter = document.getElementById('explored-counter');
+            counter.textContent = `${exploredIds.size} / ${figuresData.length}`;
+        }
+
+        /**
+         * Filter Figures by Category
+         */
+        function filterFigures(category) {
+            currentFilter = category;
+            
+            // Update filter button styling
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.dataset.filter === category) {
+                    btn.className = 'filter-btn bg-ink text-chartreuse font-mono text-xs font-bold px-3 py-1.5 rounded-lg border-2 border-ink transition';
+                } else {
+                    btn.className = 'filter-btn bg-parchment text-ink hover:bg-chartreuse font-mono text-xs font-bold px-3 py-1.5 rounded-lg border-2 border-ink transition';
+                }
+            });
+
+            const filtered = category === 'all' 
+                ? figuresData 
+                : figuresData.filter(f => f.category === category);
+
+            if (filtered.length > 0 && !filtered.some(f => f.id === activeFigureId)) {
+                selectFigure(filtered[0].id);
+            } else {
+                renderTabs();
+            }
+        }
+
+        /**
+         * Render Detailed Biography, Contributions, and Community Impact Dossier
+         */
+        function renderFigureDossier(id) {
+            const figure = figuresData.find(f => f.id === id);
+            if (!figure) return;
+
+            const stage = document.getElementById('dossier-stage');
+            stage.classList.remove('animate-entry');
+            void stage.offsetWidth; // Trigger reflow for animation
+            stage.classList.add('animate-entry');
+
+            stage.innerHTML = `
+                <article class="paper-texture border-4 border-ink rounded-2xl shadow-hard-lg overflow-hidden bg-parchment">
+                    <!-- Top Identity Banner -->
+                    <div class="border-b-4 border-ink p-6 sm:p-8 ${figure.cardTint} flex flex-col lg:flex-row gap-6 lg:items-center justify-between">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                            <!-- Vintage Framed SVG Portrait -->
+                            <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl border-4 border-ink shadow-hard overflow-hidden shrink-0 bg-parchment">
+                                ${figure.portraitSvg}
+                            </div>
+                            <div>
+                                <div class="flex flex-wrap items-center gap-2 mb-2">
+                                    <span class="${figure.badgeBg} font-mono text-xs font-bold uppercase px-3 py-1 rounded-full border-2 border-ink">
+                                        ${figure.category}
+                                    </span>
+                                    <span class="bg-parchment font-mono text-xs font-bold px-3 py-1 rounded-full border-2 border-ink">
+                                        ${figure.years}
+                                    </span>
+                                </div>
+                                <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-black text-ink tracking-tight">
+                                    ${figure.name}
+                                </h2>
+                                <p class="font-serif italic text-lg text-stone-800 mt-1">${figure.role}</p>
+                                <p class="font-mono text-xs text-stone-700 mt-1">📍 ${figure.location}</p>
+                            </div>
+                        </div>
+
+                        <!-- Pull Quote Box -->
+                        <blockquote class="bg-parchment border-3 border-ink rounded-xl p-4 sm:p-5 shadow-hard-sm max-w-md relative">
+                            <span class="font-serif text-4xl font-black text-crimson leading-none">“</span>
+                            <p class="font-serif italic text-base sm:text-lg font-bold text-ink -mt-3">
+                                ${figure.quote}
+                            </p>
+                        </blockquote>
+                    </div>
+
+                    <!-- Three-Pillar Content Grid: Biography | Contributions | How It Helped Others -->
+                    <div class="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        
+                        <!-- Column 1: Biography -->
+                        <section class="bg-white border-3 border-ink rounded-2xl p-5 shadow-hard-sm flex flex-col justify-between">
+                            <div>
+                                <div class="inline-block bg-chartreuse border-2 border-ink px-3 py-1 rounded-lg font-mono text-xs font-bold uppercase mb-3">
+                                    01. Life & Biography
+                                </div>
+                                <h3 class="font-serif text-xl font-black mb-3 text-ink">Roots & Journey to Harlem</h3>
+                                <div class="space-y-3 text-sm sm:text-base leading-relaxed text-stone-800">
+                                    ${figure.biography.map(p => `<p>${p}</p>`).join('')}
+                                </div>
+                            </div>
+                            <div class="mt-5 pt-3 border-t-2 border-dashed border-ink/30 font-mono text-xs text-stone-600">
+                                ARCHIVE RECORD // ${figure.id.toUpperCase()}-1920s
+                            </div>
+                        </section>
+
+                        <!-- Column 2: Contributions to the Harlem Renaissance -->
+                        <section class="bg-skyvintage/30 border-3 border-ink rounded-2xl p-5 shadow-hard-sm flex flex-col justify-between">
+                            <div>
+                                <div class="inline-block bg-skyvintage border-2 border-ink px-3 py-1 rounded-lg font-mono text-xs font-bold uppercase mb-3">
+                                    02. Renaissance Contributions
+                                </div>
+                                <h3 class="font-serif text-xl font-black mb-3 text-ink">What They Built & Created</h3>
+                                <ul class="space-y-3 text-sm sm:text-base text-stone-900">
+                                    ${figure.contributions.map(item => `
+                                        <li class="flex items-start gap-2.5 bg-parchment/90 p-3 rounded-xl border-2 border-ink">
+                                            <span class="text-crimson font-bold mt-0.5">✦</span>
+                                            <span>${item}</span>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        </section>
+
+                        <!-- Column 3: How It Helped Other People -->
+                        <section class="bg-orchid/30 border-3 border-ink rounded-2xl p-5 shadow-hard-sm flex flex-col justify-between">
+                            <div>
+                                <div class="inline-block bg-orchid border-2 border-ink px-3 py-1 rounded-lg font-mono text-xs font-bold uppercase mb-3">
+                                    03. Community Uplift
+                                </div>
+                                <h3 class="font-serif text-xl font-black mb-3 text-ink">How It Helped Other People</h3>
+                                <ul class="space-y-3 text-sm sm:text-base text-stone-900">
+                                    ${figure.howItHelpedOthers.map(impact => `
+                                        <li class="flex items-start gap-2.5 bg-parchment/90 p-3 rounded-xl border-2 border-ink">
+                                            <span class="bg-chartreuse border border-ink rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">♥</span>
+                                            <span>${impact}</span>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        </section>
+
+                    </div>
+
+                    <!-- Interactive Knowledge Check / Primary Source Simulation Footer -->
+                    <div class="bg-ink text-parchment p-6 sm:px-8 border-t-4 border-ink">
+                        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                            <div>
+                                <span class="font-mono text-xs uppercase tracking-wider text-chartreuse font-bold">Interactive Primary Source Check</span>
+                                <h4 class="font-serif text-lg sm:text-xl font-bold mt-1">${figure.interactivePrompt.question}</h4>
+                            </div>
+                            <div class="flex flex-wrap gap-3">
+                                ${figure.interactivePrompt.options.map((opt, idx) => `
+                                    <button onclick="handlePromptChoice('${figure.id}', ${idx})" class="bg-parchment text-ink hover:bg-chartreuse font-mono text-xs font-bold px-4 py-2.5 rounded-xl border-2 border-chartreuse transition">
+                                        ${opt.label}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div id="prompt-feedback" class="hidden mt-4 p-3.5 rounded-xl bg-crimson/20 border-2 border-chartreuse text-parchment font-sans text-sm"></div>
+                    </div>
+                </article>
+            `;
+        }
+
+        /**
+         * Handle Interactive Question Feedback inside Figure Dossier
+         */
+        function handlePromptChoice(figureId, optionIdx) {
+            const figure = figuresData.find(f => f.id === figureId);
+            const feedbackBox = document.getElementById('prompt-feedback');
+            if (!figure || !feedbackBox) return;
+
+            feedbackBox.classList.remove('hidden');
+            feedbackBox.innerHTML = `<strong>Historical Insight:</strong> ${figure.interactivePrompt.options[optionIdx].response}`;
+        }
+
+        /**
+         * Render Interactive Timeline on 135th Street
+         */
+        function renderTimeline() {
+            const container = document.getElementById('timeline-events');
+            container.innerHTML = '';
+
+            timelineMilestones.forEach((item, index) => {
+                const isActive = index === activeTimelineIdx;
+                const btn = document.createElement('button');
+                btn.onclick = () => {
+                    activeTimelineIdx = index;
+                    renderTimeline();
+                };
+                btn.className = `p-4 rounded-xl border-3 border-ink text-left transition ${
+                    isActive 
+                        ? 'bg-crimson text-parchment shadow-hard-sm translate-y-0.5' 
+                        : 'bg-white text-ink hover:bg-skyvintage/40 shadow-hard'
+                }`;
+                btn.innerHTML = `
+                    <div class="font-mono text-xs font-bold uppercase ${isActive ? 'text-chartreuse' : 'text-crimson'}">${item.year}</div>
+                    <div class="font-serif font-bold text-base mt-1 leading-snug">${item.title}</div>
+                `;
+                container.appendChild(btn);
+            });
+
+            const activeItem = timelineMilestones[activeTimelineIdx];
+            const display = document.getElementById('timeline-display');
+            display.innerHTML = `
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                    <span class="font-serif font-black text-xl text-ink">${activeItem.year} — ${activeItem.title}</span>
+                    <span class="font-mono text-xs font-bold bg-parchment px-2.5 py-1 rounded border-2 border-ink self-start">HISTORICAL SNAPSHOT</span>
+                </div>
+                <p class="text-sm sm:text-base text-stone-900 leading-relaxed">${activeItem.description}</p>
+            `;
+        }
+
+        /**
+         * Community Ripple Modal Controls & Simulation
+         */
+        function openImpactNetworkModal() {
+            const modal = document.getElementById('ripple-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeImpactNetworkModal() {
+            const modal = document.getElementById('ripple-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function simulateRipple(pillar) {
+            const output = document.getElementById('ripple-output');
+            const scenarios = {
+                economic: {
+                    title: 'Economic Self-Reliance & Mutual Aid',
+                    leaders: 'Marcus Garvey & Community Cooperatives',
+                    effect: 'By establishing Black-owned newspapers, printing presses, factories, and shipping ventures, Harlem leaders created direct employment and kept wealth circulating within Black neighborhoods—showing families that collective organization could overcome systemic exclusion.'
+                },
+                literary: {
+                    title: 'Literary & Cultural Representation',
+                    leaders: 'Anita Scott Coleman, Langston Hughes & Zora Neale Hurston',
+                    effect: 'Through short stories, folklore, and jazz poetry, writers replaced harmful stereotypes with authentic, multidimensional Black characters. Children reading The Brownies’ Book and adults reading The Crisis saw their own dialects, families, and histories honored in print.'
+                },
+                civil: {
+                    title: 'Civil Rights & Global Solidarity',
+                    leaders: 'W.E.B. Du Bois & Duke Ellington',
+                    effect: 'Art and music served as persuasive diplomacy. Du Bois’s editorials mobilized legal challenges against injustice, while Ellington’s nationwide radio broadcasts brought Black excellence into millions of homes—laying the cultural foundation for the 1950s–1960s Civil Rights Movement.'
+                }
+            };
+
+            const data = scenarios[pillar];
+            output.innerHTML = `
+                <div class="font-mono text-xs font-bold uppercase text-crimson mb-1">Key Architects: ${data.leaders}</div>
+                <h3 class="font-serif text-2xl font-black text-ink mb-2">${data.title}</h3>
+                <p class="text-sm sm:text-base text-stone-800 leading-relaxed">${data.effect}</p>
+            `;
+        }
+
+        /**
+         * Procedural 1920s Harlem Jazz Lounge Synthesizer (Tone.js)
+         * Generates a warm upright bass & ragtime/blues chord progression without external audio URLs
+         */
+        async function toggleJazzAudio() {
+            const btn = document.getElementById('toggle-audio-btn');
+            const status = document.getElementById('audio-status');
+            const vinyl = document.getElementById('vinyl-disc');
+
+            if (!isAudioPlaying) {
+                try {
+                    await Tone.start();
+
+                    if (!pianoSynth) {
+                        pianoSynth = new Tone.PolySynth(Tone.Synth, {
+                            oscillator: { type: 'triangle' },
+                            envelope: { attack: 0.04, decay: 0.3, sustain: 0.2, release: 0.8 }
+                        }).toDestination();
+                        pianoSynth.volume.value = -12;
+
+                        bassSynth = new Tone.MonoSynth({
+                            oscillator: { type: 'sine' },
+                            envelope: { attack: 0.05, decay: 0.2, sustain: 0.4, release: 0.5 }
+                        }).toDestination();
+                        bassSynth.volume.value = -10;
+
+                        const chords = [
+                            ['C4', 'E4', 'G4', 'Bb4'],
+                            ['F4', 'A4', 'C5', 'Eb5'],
+                            ['C4', 'E4', 'G4', 'Bb4'],
+                            ['G4', 'B4', 'D5', 'F5']
+                        ];
+                        const bassNotes = ['C2', 'F2', 'C2', 'G2'];
+                        let step = 0;
+
+                        jazzLoop = new Tone.Loop((time) => {
+                            const idx = step % chords.length;
+                            pianoSynth.triggerAttackRelease(chords[idx], '2n', time);
+                            bassSynth.triggerAttackRelease(bassNotes[idx], '4n', time);
+                            bassSynth.triggerAttackRelease(bassNotes[idx], '8n', time + 0.5);
+                            step++;
+                        }, '1m');
+                    }
+
+                    Tone.Transport.bpm.value = 92;
+                    jazzLoop.start(0);
+                    Tone.Transport.start();
+
+                    isAudioPlaying = true;
+                    btn.textContent = 'PAUSE';
+                    status.textContent = 'Playing Harlem Blues Loop...';
+                    vinyl.classList.remove('spin-paused');
+                } catch (err) {
+                    status.textContent = 'Audio unavailable in browser';
+                }
+            } else {
+                Tone.Transport.pause();
+                isAudioPlaying = false;
+                btn.textContent = 'PLAY';
+                status.textContent = 'Paused • Click to resume';
+                vinyl.classList.add('spin-paused');
+            }
+        }
+    </script>
+</body>
+</html>
