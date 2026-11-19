@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Anthropocene Reviewed — Field Guide & Study Companion</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Vintage Serif & Editorial Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome for Vintage Icons & Stars -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        crimson: '#a83c32',
+                        darkred: '#3b120e',
+                        sky: '#9de7f2',
+                        lilac: '#d39df2',
+                        chartreuse: '#e5f29d',
+                        parchment: '#fcfaf5',
+                        ink: '#1a1917'
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+                        mono: ['"Courier Prime"', 'monospace'],
+                        sans: ['"Inter"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Maximalist Vintage Encyclopedia Styling */
+        body {
+            background-color: #3b120e;
+            color: #1a1917;
+            background-image: radial-gradient(#a83c32 0.85px, transparent 0.85px), radial-gradient(#1a1917 0.65px, #3b120e 0.65px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+        }
+
+        .encyclopedia-border {
+            border: 3px solid #1a1917;
+            box-shadow: 6px 6px 0px #1a1917;
+        }
+
+        .encyclopedia-border-sm {
+            border: 2px solid #1a1917;
+            box-shadow: 3px 3px 0px #1a1917;
+        }
+
+        .encyclopedia-card {
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+        }
+
+        .encyclopedia-card:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 8px 8px 0px #1a1917;
+        }
+
+        .double-rule {
+            border-top: 4px double #1a1917;
+            border-bottom: 4px double #1a1917;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fcfaf5;
+            border-left: 2px solid #1a1917;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #a83c32;
+            border: 2px solid #1a1917;
+        }
+
+        /* Print / Flashcard Flip Utilities */
+        .perspective {
+            perspective: 1000px;
+        }
+        .preserve-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased selection:bg-crimson selection:text-parchment pb-16">
+
+    <!-- Top Archival Banner -->
+    <div class="bg-crimson text-parchment border-b-4 border-ink py-2 px-4 text-center font-mono text-xs sm:text-sm tracking-widest uppercase flex flex-wrap justify-between items-center gap-2">
+        <span>VOL. I — ARCHIVAL EDITION</span>
+        <span class="font-bold">★ HUMAN-CENTERED PLANETARY COMPENDIUM ★</span>
+        <span>EST. HOLOCENE / ANTHROPOCENE</span>
+    </div>
+
+    <!-- Main Container -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        
+        <!-- Maximalist Vintage Header -->
+        <header class="bg-parchment encyclopedia-border rounded-xl p-6 sm:p-10 mb-8 relative overflow-hidden">
+            <!-- Decorative Corner Ornaments -->
+            <div class="absolute top-3 left-3 text-crimson text-xl"><i class="fa-solid fa-compass"></i></div>
+            <div class="absolute top-3 right-3 text-crimson text-xl"><i class="fa-solid fa-feather-pointed"></i></div>
+            <div class="absolute bottom-3 left-3 text-crimson text-xl"><i class="fa-solid fa-star-of-life"></i></div>
+            <div class="absolute bottom-3 right-3 text-crimson text-xl"><i class="fa-solid fa-book-open"></i></div>
+
+            <div class="text-center max-w-4xl mx-auto">
+                <div class="inline-block bg-chartreuse border-2 border-ink rounded-full px-4 py-1 font-mono text-xs font-bold uppercase tracking-wider mb-4 shadow-sm">
+                    Interactive Field Guide & Study Companion
+                </div>
+                
+                <h1 class="font-serif text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-ink uppercase leading-none mb-3">
+                    The Anthropocene <span class="text-crimson italic block sm:inline">Reviewed</span>
+                </h1>
+                
+                <p class="font-mono text-sm sm:text-base text-ink/80 max-w-2xl mx-auto mb-6">
+                    Essays on a Human-Centered Planet by <span class="font-bold underline decoration-crimson decoration-2">John Green</span> — Rated on a Five-Star Scale.
+                </p>
+
+                <!-- Decorative Double Rule Divider -->
+                <div class="double-rule py-3 my-4 flex flex-wrap justify-center items-center gap-4 sm:gap-8 font-mono text-xs sm:text-sm">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-crimson border border-ink inline-block"></span>
+                        <span><strong>44</strong> ARCHIVED ESSAYS</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-sky border border-ink inline-block"></span>
+                        <span><strong>4.18 ★</strong> MEAN RATING</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-lilac border border-ink inline-block"></span>
+                        <span><strong>5-STAR</strong> CRITICAL SCALE</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <nav class="flex flex-wrap justify-center gap-3 mt-6" aria-label="Study Companion Modes">
+                    <button onclick="switchTab('catalog')" id="tab-catalog" class="tab-btn bg-crimson text-parchment font-mono font-bold text-sm px-5 py-3 rounded-lg encyclopedia-border-sm flex items-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-book-atlas"></i> Essay Encyclopedia
+                    </button>
+                    <button onclick="switchTab('flashcards')" id="tab-flashcards" class="tab-btn bg-sky text-ink font-mono font-bold text-sm px-5 py-3 rounded-lg encyclopedia-border-sm flex items-center gap-2 cursor-pointer hover:bg-chartreuse transition">
+                        <i class="fa-solid fa-layer-group"></i> Study Flashcards
+                    </button>
+                    <button onclick="switchTab('reviewer')" id="tab-reviewer" class="tab-btn bg-lilac text-ink font-mono font-bold text-sm px-5 py-3 rounded-lg encyclopedia-border-sm flex items-center gap-2 cursor-pointer hover:bg-chartreuse transition">
+                        <i class="fa-solid fa-pen-nib"></i> Your 5-Star Logbook
+                    </button>
+                    <button onclick="switchTab('themes')" id="tab-themes" class="tab-btn bg-chartreuse text-ink font-mono font-bold text-sm px-5 py-3 rounded-lg encyclopedia-border-sm flex items-center gap-2 cursor-pointer hover:bg-sky transition">
+                        <i class="fa-solid fa-magnifying-glass-chart"></i> Motifs & Themes
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- ========================================================= -->
+        <!-- SECTION 1: ESSAY ENCYCLOPEDIA (CATALOG)                   -->
+        <!-- ========================================================= -->
+        <main id="view-catalog" class="space-y-8">
+            
+            <!-- Search, Filter & Randomizer Bar -->
+            <section class="bg-sky/40 backdrop-blur-sm encyclopedia-border rounded-xl p-5">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                    <!-- Search Input -->
+                    <div class="md:col-span-5 relative">
+                        <label for="search-input" class="sr-only">Search essays</label>
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-ink/60"></i>
+                        <input type="text" id="search-input" placeholder="Search essays, quotes, or themes..." 
+                               class="w-full pl-11 pr-4 py-3 bg-parchment border-2 border-ink rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-crimson">
+                    </div>
+
+                    <!-- Category Filter -->
+                    <div class="md:col-span-3">
+                        <label for="category-filter" class="sr-only">Filter by Taxonomy</label>
+                        <select id="category-filter" class="w-full px-4 py-3 bg-parchment border-2 border-ink rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-crimson cursor-pointer">
+                            <option value="all">All Taxonomies</option>
+                            <option value="Nature & Cosmos">Nature & Cosmos</option>
+                            <option value="Human Invention">Human Invention</option>
+                            <option value="Art & Culture">Art & Culture</option>
+                            <option value="Mortality & Hope">Mortality & Hope</option>
+                        </select>
+                    </div>
+
+                    <!-- Star Rating Filter -->
+                    <div class="md:col-span-2">
+                        <label for="rating-filter" class="sr-only">Filter by Rating</label>
+                        <select id="rating-filter" class="w-full px-4 py-3 bg-parchment border-2 border-ink rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-crimson cursor-pointer">
+                            <option value="all">Any Rating ★</option>
+                            <option value="5">5.0 Stars Only</option>
+                            <option value="4">4.0 – 4.5 Stars</option>
+                            <option value="low">Under 4.0 Stars</option>
+                        </select>
+                    </div>
+
+                    <!-- Random Essay Button -->
+                    <div class="md:col-span-2">
+                        <button onclick="openRandomEssay()" class="w-full py-3 px-4 bg-crimson text-parchment font-mono font-bold text-sm rounded-lg border-2 border-ink shadow-[3px_3px_0px_#1a1917] hover:bg-ink transition flex items-center justify-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-shuffle"></i> Random
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Count Banner -->
+            <div class="flex justify-between items-center font-mono text-sm px-2">
+                <span id="results-count" class="bg-parchment px-3 py-1 border-2 border-ink rounded-md font-bold">Showing 16 Curated Entries</span>
+                <button onclick="resetFilters()" class="bg-parchment px-3 py-1 border-2 border-ink rounded-md text-crimson underline font-bold hover:bg-chartreuse hover:text-ink cursor-pointer">Reset Filters</button>
+            </div>
+
+            <!-- Essay Cards Grid -->
+            <div id="essay-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Populated dynamically via JS -->
+            </div>
+        </main>
+
+        <!-- ========================================================= -->
+        <!-- SECTION 2: STUDY FLASHCARDS                               -->
+        <!-- ========================================================= -->
+        <section id="view-flashcards" class="hidden space-y-8">
+            <div class="bg-parchment encyclopedia-border rounded-xl p-6 sm:p-10 max-w-3xl mx-auto text-center">
+                <span class="bg-lilac border-2 border-ink px-3 py-1 rounded-full font-mono text-xs font-bold uppercase">Active Recall Deck</span>
+                <h2 class="font-serif text-3xl sm:text-4xl font-bold mt-3 mb-2">Anthropocene Field Deck</h2>
+                <p class="font-mono text-sm text-ink/75 mb-6">Click the specimen card to reveal John Green's rating, thematic core, and key takeaway.</p>
+
+                <!-- Flashcard Container -->
+                <div class="perspective w-full h-80 sm:h-96 mx-auto cursor-pointer mb-6" onclick="flipCard()">
+                    <div id="flashcard-inner" class="preserve-3d relative w-full h-full">
+                        
+                        <!-- Card Front -->
+                        <div class="backface-hidden absolute inset-0 bg-chartreuse encyclopedia-border rounded-xl p-8 flex flex-col justify-between items-center">
+                            <div class="w-full flex justify-between font-mono text-xs font-bold">
+                                <span id="fc-taxonomy" class="bg-parchment px-3 py-1 border border-ink rounded">TAXONOMY</span>
+                                <span id="fc-counter">1 / 16</span>
+                            </div>
+                            
+                            <div class="my-auto">
+                                <div id="fc-icon" class="text-4xl text-crimson mb-4"><i class="fa-solid fa-star"></i></div>
+                                <h3 id="fc-title" class="font-serif text-3xl sm:text-4xl font-black text-ink">Essay Title</h3>
+                                <p class="font-mono text-xs text-ink/70 mt-3 uppercase tracking-widest">[ Tap Card to Flip ]</p>
+                            </div>
+
+                            <div class="w-full border-t-2 border-ink/20 pt-3 font-mono text-xs">
+                                Specimen Entry — The Anthropocene Reviewed
+                            </div>
+                        </div>
+
+                        <!-- Card Back -->
+                        <div class="backface-hidden rotate-y-180 absolute inset-0 bg-sky encyclopedia-border rounded-xl p-6 sm:p-8 flex flex-col justify-between text-left overflow-y-auto">
+                            <div class="flex justify-between items-center border-b-2 border-ink pb-3">
+                                <span class="font-mono text-xs font-bold uppercase">John Green's Verdict</span>
+                                <span id="fc-rating" class="bg-crimson text-parchment font-mono font-bold px-3 py-1 rounded border border-ink text-sm">★★★★★</span>
+                            </div>
+
+                            <div class="my-auto py-3 space-y-3">
+                                <div>
+                                    <span class="font-mono text-xs font-bold uppercase text-crimson block">Core Thesis & Summary:</span>
+                                    <p id="fc-summary" class="font-sans text-sm sm:text-base leading-relaxed text-ink font-medium"></p>
+                                </div>
+                                <div class="bg-parchment/90 p-3 rounded-lg border border-ink">
+                                    <span class="font-mono text-xs font-bold uppercase text-ink/60 block mb-1">Notable Excerpt:</span>
+                                    <p id="fc-quote" class="font-serif italic text-sm text-ink"></p>
+                                </div>
+                            </div>
+
+                            <div class="text-center font-mono text-xs text-ink/70">
+                                [ Tap to Return to Front ]
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Flashcard Controls -->
+                <div class="flex flex-wrap justify-center items-center gap-4">
+                    <button onclick="prevCard()" class="bg-parchment hover:bg-lilac font-mono font-bold px-5 py-3 rounded-lg encyclopedia-border-sm cursor-pointer">
+                        <i class="fa-solid fa-arrow-left mr-2"></i> Previous
+                    </button>
+                    <button onclick="shuffleFlashcards()" class="bg-crimson text-parchment hover:bg-ink font-mono font-bold px-5 py-3 rounded-lg encyclopedia-border-sm cursor-pointer">
+                        <i class="fa-solid fa-shuffle mr-2"></i> Shuffle Deck
+                    </button>
+                    <button onclick="nextCard()" class="bg-parchment hover:bg-lilac font-mono font-bold px-5 py-3 rounded-lg encyclopedia-border-sm cursor-pointer">
+                        Next <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- SECTION 3: PERSONAL 5-STAR REVIEWER LOGBOOK               -->
+        <!-- ========================================================= -->
+        <section id="view-reviewer" class="hidden space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- Write a Review Form -->
+                <div class="lg:col-span-5 bg-lilac/40 encyclopedia-border rounded-xl p-6 h-fit">
+                    <div class="bg-parchment border-2 border-ink rounded-lg p-5">
+                        <span class="bg-crimson text-parchment font-mono text-xs font-bold px-2.5 py-1 rounded uppercase">Field Entry Form</span>
+                        <h2 class="font-serif text-2xl font-bold mt-2 mb-1">Review the Anthropocene</h2>
+                        <p class="font-mono text-xs text-ink/75 mb-5">Channel John Green: review any mundane, profound, or absurd artifact of human existence.</p>
+
+                        <form id="user-review-form" class="space-y-4">
+                            <div>
+                                <label class="block font-mono text-xs font-bold uppercase mb-1">Subject / Artifact Name</label>
+                                <input type="text" id="rev-subject" required placeholder="e.g., Grocery Store Carts, Rain on a Tin Roof..." 
+                                       class="w-full p-3 bg-parchment border-2 border-ink rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-crimson">
+                            </div>
+
+                            <div>
+                                <label class="block font-mono text-xs font-bold uppercase mb-1">Your 5-Star Rating</label>
+                                <div class="flex items-center gap-2 bg-chartreuse/50 p-3 border-2 border-ink rounded-lg">
+                                    <input type="range" id="rev-stars" min="1" max="5" step="0.5" value="4.5" class="w-full accent-crimson cursor-pointer" oninput="document.getElementById('star-val-display').textContent = this.value + ' ★'">
+                                    <span id="star-val-display" class="font-mono font-bold text-sm bg-parchment px-2 py-1 border border-ink rounded whitespace-nowrap">4.5 ★</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block font-mono text-xs font-bold uppercase mb-1">Critical Essay & Personal Reflection</label>
+                                <textarea id="rev-body" rows="4" required placeholder="Connect the personal to the historical. Why does this matter on a human-centered planet?"
+                                          class="w-full p-3 bg-parchment border-2 border-ink rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-crimson"></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full py-3 bg-crimson text-parchment font-mono font-bold uppercase tracking-wider rounded-lg encyclopedia-border-sm hover:bg-ink transition cursor-pointer">
+                                <i class="fa-solid fa-stamp mr-2"></i> Archive Review in Logbook
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- User's Archived Reviews -->
+                <div class="lg:col-span-7 space-y-4">
+                    <div class="bg-parchment encyclopedia-border rounded-xl p-6">
+                        <div class="flex flex-wrap justify-between items-center gap-2 border-b-2 border-ink pb-4 mb-5">
+                            <div>
+                                <h3 class="font-serif text-2xl font-bold">Your Field Logbook</h3>
+                                <p class="font-mono text-xs text-ink/70">Saved locally in your browser's archival memory.</p>
+                            </div>
+                            <span id="user-review-count" class="bg-sky font-mono text-xs font-bold px-3 py-1.5 border-2 border-ink rounded-full">0 Entries</span>
+                        </div>
+
+                        <div id="user-reviews-list" class="space-y-4">
+                            <!-- User reviews injected here -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- SECTION 4: THEMATIC SYNTHESIS & STUDY GUIDE               -->
+        <!-- ========================================================= -->
+        <section id="view-themes" class="hidden space-y-8">
+            <div class="bg-parchment encyclopedia-border rounded-xl p-6 sm:p-10">
+                <div class="max-w-3xl mb-8">
+                    <span class="bg-sky border-2 border-ink px-3 py-1 rounded-full font-mono text-xs font-bold uppercase">Literary Analysis</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl font-black mt-3 mb-2">Core Motifs & Structural Patterns</h2>
+                    <p class="font-sans text-ink/80">Use this thematic index for seminar discussions, essay writing, and understanding how John Green turns trivia into memoir.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Motif 1 -->
+                    <div class="bg-chartreuse/50 encyclopedia-border-sm rounded-xl p-6">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="w-10 h-10 rounded-lg bg-crimson text-parchment flex items-center justify-center border-2 border-ink font-bold">I</span>
+                            <h3 class="font-serif text-xl font-bold">The Paradox of the Anthropocene</h3>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-3">
+                            Humans have become a geological force reshaping climate and biodiversity, yet individually we feel small, anxious, and powerless. Green contrasts planetary scale with intimate human vulnerability.
+                        </p>
+                        <div class="font-mono text-xs bg-parchment p-2.5 rounded border border-ink">
+                            <strong>Key Essays:</strong> <em>Canada Geese, Kentucky Bluegrass, Atmospheric Carbon</em>
+                        </div>
+                    </div>
+
+                    <!-- Motif 2 -->
+                    <div class="bg-sky/50 encyclopedia-border-sm rounded-xl p-6">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="w-10 h-10 rounded-lg bg-crimson text-parchment flex items-center justify-center border-2 border-ink font-bold">II</span>
+                            <h3 class="font-serif text-xl font-bold">Attention as an Act of Love</h3>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-3">
+                            By reviewing everyday objects—like Diet Dr Pepper or scratch 'n' sniff stickers—Green argues that paying deep, earnest attention to the world is an antidote to cynicism and despair.
+                        </p>
+                        <div class="font-mono text-xs bg-parchment p-2.5 rounded border border-ink">
+                            <strong>Key Essays:</strong> <em>Diet Dr Pepper, Halley's Comet, Sunsets</em>
+                        </div>
+                    </div>
+
+                    <!-- Motif 3 -->
+                    <div class="bg-lilac/50 encyclopedia-border-sm rounded-xl p-6">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="w-10 h-10 rounded-lg bg-crimson text-parchment flex items-center justify-center border-2 border-ink font-bold">III</span>
+                            <h3 class="font-serif text-xl font-bold">The Limits of Quantification</h3>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-3">
+                            Applying a rigid five-star consumer rating system to profound experiences (like viral meningitis or the Lascaux cave paintings) exposes the absurdity—and necessity—of trying to measure human meaning.
+                        </p>
+                        <div class="font-mono text-xs bg-parchment p-2.5 rounded border border-ink">
+                            <strong>Key Essays:</strong> <em>Viral Meningitis, Lascaux Paintings, Velociraptors</em>
+                        </div>
+                    </div>
+
+                    <!-- Motif 4 -->
+                    <div class="bg-parchment encyclopedia-border-sm rounded-xl p-6">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="w-10 h-10 rounded-lg bg-crimson text-parchment flex items-center justify-center border-2 border-ink font-bold">IV</span>
+                            <h3 class="font-serif text-xl font-bold">Radical Hope & Shared Wonder</h3>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-3">
+                            Written largely during the isolation of the COVID-19 pandemic, the collection insists that hope is not naive optimism, but the courage to fall in love with a flawed, temporary world.
+                        </p>
+                        <div class="font-mono text-xs bg-chartreuse p-2.5 rounded border border-ink">
+                            <strong>Key Essays:</strong> <em>You'll Never Walk Alone, Auld Lang Syne, Sycamore Trees</em>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- ESSAY DETAIL MODAL                                        -->
+    <!-- ========================================================= -->
+    <div id="essay-modal" class="fixed inset-0 bg-ink/70 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4" onclick="closeModalOnBackdrop(event)">
+        <div class="bg-parchment encyclopedia-border rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 relative">
+            <button onclick="closeModal()" aria-label="Close modal" class="absolute top-4 right-4 w-10 h-10 bg-crimson text-parchment rounded-lg border-2 border-ink font-bold hover:bg-ink transition cursor-pointer">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="flex flex-wrap items-center gap-2 mb-3">
+                <span id="modal-taxonomy" class="bg-sky font-mono text-xs font-bold px-3 py-1 border border-ink rounded-full uppercase">Taxonomy</span>
+                <span id="modal-rating-badge" class="bg-chartreuse font-mono text-xs font-bold px-3 py-1 border border-ink rounded-full">★★★★★</span>
+            </div>
+
+            <h2 id="modal-title" class="font-serif text-3xl sm:text-4xl font-black text-ink mb-4">Essay Title</h2>
+
+            <div class="bg-lilac/30 border-2 border-ink rounded-xl p-4 mb-5">
+                <span class="font-mono text-xs font-bold uppercase text-crimson block mb-1">Archival Quote</span>
+                <blockquote id="modal-quote" class="font-serif italic text-base sm:text-lg text-ink"></blockquote>
+            </div>
+
+            <div class="space-y-4 text-sm sm:text-base leading-relaxed">
+                <div>
+                    <h4 class="font-mono text-xs font-bold uppercase text-ink/70 mb-1">Encyclopedia Entry & Analysis</h4>
+                    <p id="modal-summary" class="text-ink"></p>
+                </div>
+
+                <div class="bg-chartreuse/40 border-2 border-ink rounded-xl p-4">
+                    <h4 class="font-mono text-xs font-bold uppercase text-crimson mb-1"><i class="fa-solid fa-graduation-cap mr-1"></i> Study Discussion Prompt</h4>
+                    <p id="modal-prompt" class="font-medium text-ink text-sm"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Toast Notification (No alert() used!) -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-ink text-parchment font-mono text-xs sm:text-sm px-5 py-3 rounded-lg border-2 border-chartreuse shadow-lg transform translate-y-24 opacity-0 transition-all duration-300 z-50 flex items-center gap-2">
+        <i class="fa-solid fa-circle-check text-chartreuse"></i>
+        <span id="toast-msg">Notification</span>
+    </div>
+
+    <script>
+        // =========================================================================
+        // 1. CURATED ENCYCLOPEDIA DATASET (THE ANTHROPOCENE REVIEWED)
+        // =========================================================================
+        const essaysData = [
+            {
+                id: 1,
+                title: "You'll Never Walk Alone",
+                taxonomy: "Art & Culture",
+                rating: 5.0,
+                icon: "fa-music",
+                cardBg: "bg-sky/35",
+                quote: "“In the end, there is no way to love the world without also grieving it.”",
+                summary: "Tracing the journey of the 1945 Rodgers and Hammerstein showtune from Broadway to the terraces of Liverpool FC, Green reflects on how collective singing transforms private grief into shared resilience.",
+                prompt: "How does a song written for a fictional musical become a genuine ritual of communal comfort during real-world tragedies?"
+            },
+            {
+                id: 2,
+                title: "Halley's Comet",
+                taxonomy: "Nature & Cosmos",
+                rating: 4.5,
+                icon: "fa-meteor",
+                cardBg: "bg-lilac/35",
+                quote: "“We are all of us just passing through, brief visitors to a briefly habitable world.”",
+                summary: "Examining humanity's shifting understanding of comets—from terrifying omens of doom to predictable celestial clockwork—Green connects Edmond Halley's discovery to his own childhood disappointment in 1986.",
+                prompt: "Why does knowing when Halley's Comet will return (2061) change how humans measure the span of a single lifetime?"
+            },
+            {
+                id: 3,
+                title: "Diet Dr Pepper",
+                taxonomy: "Human Invention",
+                rating: 4.0,
+                icon: "fa-can-food",
+                cardBg: "bg-chartreuse/45",
+                quote: "“It tastes like a glorious, unnameable invention—the flavor of human ingenuity trying to imitate nature and accidentally making something new.”",
+                summary: "A joyful, unironic celebration of an artificially sweetened beverage invented in Waco, Texas. Green explores how nostalgia, sensory memory, and absurd consumer loyalty anchor us to specific moments in life.",
+                prompt: "What does Green's earnest defense of Diet Dr Pepper suggest about high art versus everyday pop-culture comforts?"
+            },
+            {
+                id: 4,
+                title: "Viral Meningitis",
+                taxonomy: "Mortality & Hope",
+                rating: 1.0,
+                icon: "fa-virus",
+                cardBg: "bg-crimson/15",
+                quote: "“Pain is so hard to remember once it ends, and so impossible to forget while it is happening.”",
+                summary: "One of the lowest-rated entries in the book, recounting Green's harrowing hospitalization with viral meningitis and the brutal isolation of severe physical pain.",
+                prompt: "How does Green use a 1-star rating to highlight the limitations of language when describing acute physical suffering?"
+            },
+            {
+                id: 5,
+                title: "Lascaux Paintings",
+                taxonomy: "Art & Culture",
+                rating: 5.0,
+                icon: "fa-paintbrush",
+                cardBg: "bg-chartreuse/45",
+                quote: "“We are the animals who look at a cave wall and see not stone, but a canvas.”",
+                summary: "Reflecting on the 17,000-year-old Paleolithic cave paintings discovered by teenagers in France, Green marvels at the enduring human impulse to record beauty for unknown future eyes.",
+                prompt: "Why did closing the original Lascaux caves to protect them from human breath create a poignant paradox about preservation?"
+            },
+            {
+                id: 6,
+                title: "Canada Geese",
+                taxonomy: "Nature & Cosmos",
+                rating: 2.0,
+                icon: "fa-feather",
+                cardBg: "bg-sky/35",
+                quote: "“They are a mirror held up to us: aggressive, territorial, adaptable, and thriving in the ruins we make.”",
+                summary: "Once thought nearly extinct, Canada geese adapted brilliantly to suburban lawns and golf courses. Green explores why humans often resent the very wildlife that succeeds alongside us.",
+                prompt: "What does human annoyance toward Canada geese reveal about our selective definitions of 'wild' nature?"
+            },
+            {
+                id: 7,
+                title: "The Yips",
+                taxonomy: "Mortality & Hope",
+                rating: 1.0,
+                icon: "fa-golf-ball-tee",
+                cardBg: "bg-crimson/15",
+                quote: "“Sometimes the brain becomes an overprotective parent that won't let the body cross the street.”",
+                summary: "Using the sudden, unexplained loss of fine motor skills in athletes as a lens, Green unpacks his lifelong struggle with obsessive-compulsive disorder and intrusive thoughts.",
+                prompt: "How does Green connect a niche sports psychology phenomenon to universal experiences of mental health and self-doubt?"
+            },
+            {
+                id: 8,
+                title: "Scratch 'n' Sniff Stickers",
+                taxonomy: "Human Invention",
+                rating: 4.5,
+                icon: "fa-note-sticky",
+                cardBg: "bg-lilac/35",
+                quote: "“Microencapsulation is a miracle of chemistry dedicated to capturing fleeting smells in tiny plastic bubbles.”",
+                summary: "Tracing the accidental invention of microencapsulation for carbonless copy paper to 1980s grape-scented stickers, Green meditates on how smell unlocks vivid childhood memories.",
+                prompt: "Why does Green find profound beauty in technologies originally created for mundane office work?"
+            },
+            {
+                id: 9,
+                title: "Kentucky Bluegrass",
+                taxonomy: "Nature & Cosmos",
+                rating: 2.0,
+                icon: "fa-seedling",
+                cardBg: "bg-chartreuse/45",
+                quote: "“A lawn is an ecological desert maintained at enormous cost just to prove we have leisure time.”",
+                summary: "Neither native to Kentucky nor actually blue, this grass dominates American suburbs. Green critiques our obsession with manicured lawns and the environmental cost of taming landscapes.",
+                prompt: "In what ways is the suburban front lawn a symbol of the Anthropocene's aesthetic control over ecosystems?"
+            },
+            {
+                id: 10,
+                title: "Sunsets",
+                taxonomy: "Nature & Cosmos",
+                rating: 5.0,
+                icon: "fa-sun",
+                cardBg: "bg-sky/35",
+                quote: "“Every sunset is an optical illusion created by atmosphere and angle, yet nothing feels more real.”",
+                summary: "A lyrical meditation on Rayleigh scattering, daily endings, and how a routine astronomical event becomes a universal symbol of gratitude and transience.",
+                prompt: "How does Green balance scientific explanation with emotional reverence in his 5-star review of sunsets?"
+            },
+            {
+                id: 11,
+                title: "Velociraptors",
+                taxonomy: "Nature & Cosmos",
+                rating: 4.0,
+                icon: "fa-dragon",
+                cardBg: "bg-lilac/35",
+                quote: "“What we imagine a dinosaur to be tells us far more about ourselves than about the Cretaceous period.”",
+                summary: "Contrasting the real turkey-sized feathered predator with the terrifying movie monsters of Jurassic Park, Green examines how human imagination reshapes scientific truth.",
+                prompt: "Why do humans prefer cinematic myths over paleontological accuracy when imagining extinct creatures?"
+            },
+            {
+                id: 12,
+                title: "Auld Lang Syne",
+                taxonomy: "Mortality & Hope",
+                rating: 5.0,
+                icon: "fa-champagne-glasses",
+                cardBg: "bg-chartreuse/45",
+                quote: "“We sing it not because we believe the past was better, but because we want to remember we were here together.”",
+                summary: "In the book's closing essay, Green reflects on Robert Burns's New Year's anthem, time's relentless forward march, and the radical act of remaining hopeful in an uncertain century.",
+                prompt: "Why is 'Auld Lang Syne' the ideal concluding essay for a collection reviewing the Anthropocene?"
+            }
+        ];
+
+        // =========================================================================
+        // 2. STATE MANAGEMENT
+        // =========================================================================
+        let filteredEssays = [...essaysData];
+        let flashcardDeck = [...essaysData];
+        let currentCardIndex = 0;
+        let isCardFlipped = false;
+
+        // Load user reviews from localStorage or seed with 1 sample entry
+        let userReviews = JSON.parse(localStorage.getItem('anthropocene_user_reviews')) || [
+            {
+                id: 101,
+                subject: "Library Book Due-Date Stamps",
+                stars: 4.5,
+                date: "Archival Sample",
+                body: "Before barcode scanners, ink stamps inside the back cover of a library book created an anonymous community of readers. Seeing dates from 1994 alongside 2024 reminds us that stories outlive their momentary holders."
+            }
+        ];
+
+        // =========================================================================
+        // 3. TAB NAVIGATION
+        // =========================================================================
+        function switchTab(tabName) {
+            const views = ['catalog', 'flashcards', 'reviewer', 'themes'];
+            views.forEach(v => {
+                document.getElementById(`view-${v}`).classList.add('hidden');
+                const btn = document.getElementById(`tab-${v}`);
+                btn.classList.remove('bg-crimson', 'text-parchment');
+                // Restore distinct pastel colors
+                if (v === 'catalog') btn.classList.add('bg-parchment', 'text-ink');
+                if (v === 'flashcards') btn.classList.add('bg-sky', 'text-ink');
+                if (v === 'reviewer') btn.classList.add('bg-lilac', 'text-ink');
+                if (v === 'themes') btn.classList.add('bg-chartreuse', 'text-ink');
+            });
+
+            document.getElementById(`view-${tabName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tabName}`);
+            activeBtn.classList.remove('bg-parchment', 'bg-sky', 'bg-lilac', 'bg-chartreuse', 'text-ink');
+            activeBtn.classList.add('bg-crimson', 'text-parchment');
+
+            if (tabName === 'flashcards') renderFlashcard();
+            if (tabName === 'reviewer') renderUserReviews();
+        }
+
+        // =========================================================================
+        // 4. CATALOG RENDERING & FILTERING
+        // =========================================================================
+        function renderStars(rating) {
+            let starsHtml = '';
+            for (let i = 1; i <= 5; i++) {
+                if (rating >= i) {
+                    starsHtml += '<i class="fa-solid fa-star text-crimson"></i>';
+                } else if (rating >= i - 0.5) {
+                    starsHtml += '<i class="fa-solid fa-star-half-stroke text-crimson"></i>';
+                } else {
+                    starsHtml += '<i class="fa-regular fa-star text-ink/30"></i>';
+                }
+            }
+            return `${starsHtml} <span class="ml-1 font-bold text-ink">(${rating.toFixed(1)})</span>`;
+        }
+
+        function renderCatalog() {
+            const grid = document.getElementById('essay-grid');
+            const countLabel = document.getElementById('results-count');
+            
+            countLabel.textContent = `Showing ${filteredEssays.length} Curated ${filteredEssays.length === 1 ? 'Entry' : 'Entries'}`;
+
+            if (filteredEssays.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full bg-parchment encyclopedia-border rounded-xl p-10 text-center">
+                        <i class="fa-solid fa-compass text-4xl text-crimson mb-3"></i>
+                        <h3 class="font-serif text-2xl font-bold mb-2">No Archival Specimens Found</h3>
+                        <p class="font-mono text-sm text-ink/70 mb-4">Try adjusting your search terms or taxonomy filters.</p>
+                        <button onclick="resetFilters()" class="bg-crimson text-parchment font-mono font-bold px-5 py-2.5 rounded-lg border-2 border-ink cursor-pointer">Reset Search</button>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filteredEssays.map(essay => `
+                <article onclick="openEssayModal(${essay.id})" class="${essay.cardBg} bg-parchment encyclopedia-border encyclopedia-card rounded-xl p-6 flex flex-col justify-between cursor-pointer">
+                    <div>
+                        <div class="flex justify-between items-start gap-2 mb-3">
+                            <span class="bg-parchment font-mono text-xs font-bold px-2.5 py-1 border border-ink rounded uppercase">
+                                ${essay.taxonomy}
+                            </span>
+                            <span class="w-9 h-9 rounded-lg bg-parchment border-2 border-ink flex items-center justify-center text-crimson">
+                                <i class="fa-solid ${essay.icon}"></i>
+                            </span>
+                        </div>
+
+                        <h3 class="font-serif text-2xl font-black text-ink mb-2 leading-tight">
+                            ${essay.title}
+                        </h3>
+
+                        <div class="font-mono text-xs mb-3 bg-parchment/80 inline-block px-2.5 py-1 rounded border border-ink">
+                            ${renderStars(essay.rating)}
+                        </div>
+
+                        <p class="text-sm text-ink/85 line-clamp-3 leading-relaxed mb-4">
+                            ${essay.summary}
+                        </p>
+                    </div>
+
+                    <div class="pt-3 border-t-2 border-ink/20 flex justify-between items-center font-mono text-xs font-bold">
+                        <span class="text-crimson uppercase">Inspect Entry →</span>
+                        <span class="text-ink/60">Specimen #0${essay.id}</span>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        function applyFilters() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            const category = document.getElementById('category-filter').value;
+            const ratingFilter = document.getElementById('rating-filter').value;
+
+            filteredEssays = essaysData.filter(essay => {
+                const matchesSearch = essay.title.toLowerCase().includes(query) ||
+                                      essay.summary.toLowerCase().includes(query) ||
+                                      essay.quote.toLowerCase().includes(query);
+                const matchesCategory = category === 'all' || essay.taxonomy === category;
+                
+                let matchesRating = true;
+                if (ratingFilter === '5') matchesRating = essay.rating === 5.0;
+                else if (ratingFilter === '4') matchesRating = essay.rating >= 4.0 && essay.rating < 5.0;
+                else if (ratingFilter === 'low') matchesRating = essay.rating < 4.0;
+
+                return matchesSearch && matchesCategory && matchesRating;
+            });
+
+            renderCatalog();
+        }
+
+        function resetFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('category-filter').value = 'all';
+            document.getElementById('rating-filter').value = 'all';
+            filteredEssays = [...essaysData];
+            renderCatalog();
+        }
+
+        // Event Listeners for Filters
+        document.getElementById('search-input').addEventListener('input', applyFilters);
+        document.getElementById('category-filter').addEventListener('change', applyFilters);
+        document.getElementById('rating-filter').addEventListener('change', applyFilters);
+
+        // =========================================================================
+        // 5. MODAL LOGIC
+        // =========================================================================
+        function openEssayModal(id) {
+            const essay = essaysData.find(e => e.id === id);
+            if (!essay) return;
+
+            document.getElementById('modal-taxonomy').textContent = essay.taxonomy;
+            document.getElementById('modal-rating-badge').innerHTML = renderStars(essay.rating);
+            document.getElementById('modal-title').textContent = essay.title;
+            document.getElementById('modal-quote').textContent = essay.quote;
+            document.getElementById('modal-summary').textContent = essay.summary;
+            document.getElementById('modal-prompt').textContent = essay.prompt;
+
+            document.getElementById('essay-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function openRandomEssay() {
+            const randomIndex = Math.floor(Math.random() * essaysData.length);
+            openEssayModal(essaysData[randomIndex].id);
+        }
+
+        function closeModal() {
+            document.getElementById('essay-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function closeModalOnBackdrop(e) {
+            if (e.target.id === 'essay-modal') closeModal();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // =========================================================================
+        // 6. FLASHCARD ENGINE
+        // =========================================================================
+        function renderFlashcard() {
+            const card = flashcardDeck[currentCardIndex];
+            const inner = document.getElementById('flashcard-inner');
+            
+            // Reset flip state smoothly
+            isCardFlipped = false;
+            inner.classList.remove('rotate-y-180');
+
+            setTimeout(() => {
+                document.getElementById('fc-taxonomy').textContent = card.taxonomy;
+                document.getElementById('fc-counter').textContent = `${currentCardIndex + 1} / ${flashcardDeck.length}`;
+                document.getElementById('fc-icon').innerHTML = `<i class="fa-solid ${card.icon}"></i>`;
+                document.getElementById('fc-title').textContent = card.title;
+                document.getElementById('fc-rating').textContent = `${card.rating.toFixed(1)} ★`;
+                document.getElementById('fc-summary').textContent = card.summary;
+                document.getElementById('fc-quote').textContent = card.quote;
+            }, 120);
+        }
+
+        function flipCard() {
+            isCardFlipped = !isCardFlipped;
+            const inner = document.getElementById('flashcard-inner');
+            if (isCardFlipped) {
+                inner.classList.add('rotate-y-180');
+            } else {
+                inner.classList.remove('rotate-y-180');
+            }
+        }
+
+        function nextCard() {
+            currentCardIndex = (currentCardIndex + 1) % flashcardDeck.length;
+            renderFlashcard();
+        }
+
+        function prevCard() {
+            currentCardIndex = (currentCardIndex - 1 + flashcardDeck.length) % flashcardDeck.length;
+            renderFlashcard();
+        }
+
+        function shuffleFlashcards() {
+            for (let i = flashcardDeck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcardDeck[i], flashcardDeck[j]] = [flashcardDeck[j], flashcardDeck[i]];
+            }
+            currentCardIndex = 0;
+            renderFlashcard();
+            showToast('Study deck shuffled!');
+        }
+
+        // =========================================================================
+        // 7. PERSONAL 5-STAR LOGBOOK
+        // =========================================================================
+        document.getElementById('user-review-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const subject = document.getElementById('rev-subject').value.trim();
+            const stars = parseFloat(document.getElementById('rev-stars').value);
+            const body = document.getElementById('rev-body').value.trim();
+
+            if (!subject || !body) return;
+
+            const newEntry = {
+                id: Date.now(),
+                subject,
+                stars,
+                date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                body
+            };
+
+            userReviews.unshift(newEntry);
+            localStorage.setItem('anthropocene_user_reviews', JSON.stringify(userReviews));
+
+            this.reset();
+            document.getElementById('star-val-display').textContent = '4.5 ★';
+            renderUserReviews();
+            showToast(`Archived "${subject}" in your logbook!`);
+        });
+
+        function deleteUserReview(id) {
+            userReviews = userReviews.filter(r => r.id !== id);
+            localStorage.setItem('anthropocene_user_reviews', JSON.stringify(userReviews));
+            renderUserReviews();
+            showToast('Entry removed from logbook.');
+        }
+
+        function renderUserReviews() {
+            const list = document.getElementById('user-reviews-list');
+            const countBadge = document.getElementById('user-review-count');
+            countBadge.textContent = `${userReviews.length} ${userReviews.length === 1 ? 'Entry' : 'Entries'}`;
+
+            if (userReviews.length === 0) {
+                list.innerHTML = `
+                    <div class="text-center py-8 border-2 border-dashed border-ink/30 rounded-xl font-mono text-sm text-ink/60">
+                        Your logbook is currently empty. Write your first 5-star review on the left!
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = userReviews.map(rev => `
+                <div class="bg-chartreuse/30 border-2 border-ink rounded-xl p-5 relative">
+                    <div class="flex flex-wrap justify-between items-start gap-2 mb-2">
+                        <div>
+                            <span class="font-mono text-xs text-ink/60 block">${rev.date}</span>
+                            <h4 class="font-serif text-xl font-bold text-ink">${escapeHTML(rev.subject)}</h4>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-parchment font-mono text-xs font-bold px-2.5 py-1 border border-ink rounded">
+                                ${renderStars(rev.stars)}
+                            </span>
+                            <button onclick="deleteUserReview(${rev.id})" title="Delete entry" class="text-ink/50 hover:text-crimson p-1 cursor-pointer">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-sm text-ink/90 leading-relaxed whitespace-pre-line">${escapeHTML(rev.body)}</p>
+                </div>
+            `).join('');
+        }
+
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // =========================================================================
+        // 8. TOAST HELPER & INITIALIZATION
+        // =========================================================================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').textContent = message;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        // Initial Render on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderCatalog();
+            renderUserReviews();
+        });
+    </script>
+</body>
+</html>
