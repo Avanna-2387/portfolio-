@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WAR — Brawl Nights</title>
+  <style>
+    /* =====================================================================
+       VINTAGE MAXIMALIST PIXEL ART & EARTHY FANTASY THEME
+       User Favorite Accents: #a83c32, #9de7f2, #d39df2, #e5f29d
+       Environment Palette: Dark Green, Dark Brown, Rich Teal & Grassy Vines
+       ===================================================================== */
+    :root {
+      --red: #a83c32;
+      --cyan: #9de7f2;
+      --violet: #d39df2;
+      --gold: #e5f29d;
+      --dark-green: #12291c;
+      --moss-green: #1f4730;
+      --leaf-green: #336b43;
+      --dark-brown: #241710;
+      --bark-brown: #3d271a;
+      --dirt-mid: #4e3322;
+      --dirt-light: #69452e;
+      --rich-teal: #16484c;
+      --bright-teal: #277378;
+      --parchment: #f4eedc;
+      --ink: #0e0a07;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--dark-green);
+      color: var(--parchment);
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    /* Full-Screen Arcade Stage */
+    .fullscreen-stage {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: radial-gradient(circle at center, var(--rich-teal) 0%, var(--dark-green) 70%, var(--dark-brown) 100%);
+      border: 5px solid var(--bark-brown);
+      outline: 3px solid var(--gold);
+      outline-offset: -8px;
+    }
+
+    /* Compact Top Marquee Bar */
+    .top-bar {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 15;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(90deg, var(--dark-brown), var(--moss-green) 50%, var(--rich-teal));
+      border: 3px solid var(--gold);
+      outline: 2px solid var(--ink);
+      border-radius: 8px;
+      padding: 5px 12px;
+      box-shadow: 0 4px 0 var(--ink), 0 8px 20px rgba(0, 0, 0, 0.65);
+    }
+
+    .game-title {
+      font-size: clamp(1.15rem, 2.3vw, 1.65rem);
+      font-weight: 900;
+      letter-spacing: 5px;
+      margin: 0;
+      color: var(--gold);
+      text-shadow: 2px 2px 0 var(--ink), -1px -1px 0 var(--red);
+    }
+
+    .badge-tag {
+      background: var(--cyan);
+      color: var(--ink);
+      font-weight: 900;
+      font-size: 0.68rem;
+      padding: 3px 7px;
+      border: 2px solid var(--ink);
+      border-radius: 4px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .mini-btn {
+      font-family: inherit;
+      font-weight: 900;
+      font-size: 0.7rem;
+      padding: 4px 8px;
+      border: 2px solid var(--ink);
+      border-radius: 5px;
+      cursor: pointer;
+      text-transform: uppercase;
+      box-shadow: 2px 2px 0 var(--ink);
+      white-space: nowrap;
+    }
+
+    .mini-btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: none;
+    }
+
+    /* Full-Screen Canvas */
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    /* =====================================================================
+       OPTIONAL ON-SCREEN BOTTOM-CORNER DIRT BLOCK CONTROLS
+       ===================================================================== */
+    .hud-controls-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 12;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 14px;
+    }
+
+    /* Earthern Dirt Mound Container */
+    .dirt-cluster {
+      pointer-events: auto;
+      position: relative;
+      background-color: var(--bark-brown);
+      background-image:
+        radial-gradient(circle at 14% 28%, var(--dark-brown) 2px, transparent 3px),
+        radial-gradient(circle at 78% 66%, var(--dirt-light) 2px, transparent 3px),
+        radial-gradient(circle at 46% 82%, var(--dark-brown) 3px, transparent 4px),
+        radial-gradient(circle at 86% 24%, var(--dark-brown) 2px, transparent 3px);
+      border: 3px solid var(--ink);
+      border-top: 6px solid var(--leaf-green);
+      outline: 2px solid var(--dirt-light);
+      border-radius: 10px;
+      padding: 9px;
+      box-shadow: 0 5px 0 var(--ink), inset 0 3px 0 rgba(77, 148, 88, 0.35);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .cluster-label {
+      font-size: 0.64rem;
+      font-weight: 900;
+      color: var(--gold);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px dashed rgba(229, 242, 157, 0.35);
+      padding-bottom: 3px;
+    }
+
+    .dpad-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    /* Individual Pixel-Art Dirt Clod Button with Mossy Grass Rim & Pebbles */
+    .dirt-btn {
+      position: relative;
+      font-family: inherit;
+      font-weight: 900;
+      font-size: 0.72rem;
+      padding: 9px 10px 7px;
+      color: var(--parchment);
+      text-shadow: 1px 1px 0 var(--ink), -1px -1px 0 var(--ink);
+      background-color: var(--dirt-mid);
+      background-image:
+        radial-gradient(circle at 18% 35%, var(--dark-brown) 2px, transparent 3px),
+        radial-gradient(circle at 82% 72%, var(--dark-brown) 2.5px, transparent 3.5px),
+        radial-gradient(circle at 65% 28%, var(--dirt-light) 1.5px, transparent 2.5px),
+        radial-gradient(circle at 30% 78%, var(--dirt-light) 2px, transparent 3px),
+        linear-gradient(180deg, var(--dirt-light) 0%, var(--dirt-mid) 45%, var(--bark-brown) 100%);
+      border: 2px solid var(--ink);
+      border-top: 5px solid var(--leaf-green);
+      border-radius: 7px;
+      cursor: pointer;
+      box-shadow: 0 3px 0 var(--ink), inset 0 -2px 0 var(--dark-brown);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 58px;
+      transition: transform 0.05s, filter 0.1s;
+    }
+
+    /* Pixel Grass Tuft Accent on Top-Left of Each Dirt Button */
+    .dirt-btn::before {
+      content: "";
+      position: absolute;
+      top: -5px;
+      left: 6px;
+      width: 10px;
+      height: 4px;
+      background: #4d9458;
+      box-shadow: 16px 0 0 #336b43, 30px 1px 0 #4d9458;
+      pointer-events: none;
+    }
+
+    .dirt-btn:hover {
+      filter: brightness(1.1);
+    }
+
+    .dirt-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 var(--ink);
+    }
+
+    .dirt-btn small {
+      font-size: 0.58rem;
+      opacity: 0.9;
+      margin-top: 1px;
+    }
+
+    /* Favorite Accent Rim Highlights on Specific Dirt Buttons */
+    .accent-gold { border-bottom-color: var(--gold); color: var(--gold); }
+    .accent-red { border-bottom-color: var(--red); color: #ffbfb8; }
+    .accent-cyan { border-bottom-color: var(--cyan); color: var(--cyan); }
+    .accent-violet { border-bottom-color: var(--violet); color: var(--violet); }
+
+    .abilities-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+    }
+
+    .active-fly {
+      animation: flyGlow 0.55s infinite alternate;
+    }
+
+    @keyframes flyGlow {
+      from { box-shadow: 0 3px 0 var(--ink), 0 0 6px var(--cyan); }
+      to { box-shadow: 0 3px 0 var(--ink), 0 0 18px var(--gold); }
+    }
+
+    /* =====================================================================
+       WELCOME TO BRAWL NIGHTS — CLEAN VINTAGE VINES & EARTHY TITLE SCREEN
+       ===================================================================== */
+    .welcome-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      background:
+        radial-gradient(circle at 50% 42%, rgba(22, 72, 76, 0.72) 0%, rgba(18, 41, 28, 0.92) 65%, rgba(20, 12, 8, 0.97) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      cursor: pointer;
+    }
+
+    .vine-frame-card {
+      position: relative;
+      max-width: 600px;
+      width: 100%;
+      background: linear-gradient(180deg, #2a1b12 0%, #172e20 55%, #133638 100%);
+      border: 6px solid var(--bark-brown);
+      outline: 4px solid var(--gold);
+      box-shadow:
+        0 0 0 8px var(--ink),
+        0 0 40px rgba(39, 115, 120, 0.5),
+        inset 0 0 30px rgba(14, 10, 7, 0.85);
+      border-radius: 14px;
+      padding: 28px 24px 26px;
+      text-align: center;
+      cursor: default;
+    }
+
+    .vine-garland-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+      letter-spacing: 3px;
+      color: var(--leaf-green);
+      text-shadow: 2px 2px 0 var(--ink);
+    }
+
+    .lantern-glow {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--ink);
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      line-height: 24px;
+      font-size: 0.9rem;
+      box-shadow: 0 0 14px var(--gold), 0 0 24px var(--cyan);
+      animation: lanternSway 2.2s ease-in-out infinite alternate;
+    }
+
+    @keyframes lanternSway {
+      from { transform: rotate(-6deg) scale(0.96); }
+      to { transform: rotate(6deg) scale(1.06); }
+    }
+
+    .brawl-nights-heading {
+      margin: 6px 0 10px;
+      font-size: clamp(1.85rem, 4.6vw, 3rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: 3px;
+      color: var(--gold);
+      text-shadow:
+        3px 3px 0 var(--ink),
+        -2px -2px 0 var(--red),
+        0 0 18px rgba(157, 231, 242, 0.45);
+    }
+
+    .brawl-subtitle {
+      margin: 0 auto 22px;
+      display: inline-block;
+      background: var(--rich-teal);
+      color: var(--cyan);
+      border: 2px solid var(--gold);
+      border-radius: 6px;
+      padding: 5px 14px;
+      font-size: 0.82rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .play-btn {
+      font-family: inherit;
+      font-size: 1.4rem;
+      font-weight: 900;
+      letter-spacing: 4px;
+      padding: 14px 48px;
+      background: linear-gradient(180deg, var(--gold) 0%, #c8d977 100%);
+      color: var(--ink);
+      border: 4px solid var(--ink);
+      outline: 3px solid var(--red);
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 var(--ink), 0 0 22px rgba(229, 242, 157, 0.55);
+      transition: transform 0.08s;
+      animation: playPulse 1.2s infinite alternate;
+    }
+
+    .play-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 var(--ink);
+    }
+
+    @keyframes playPulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.05); }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="fullscreen-stage">
+    <!-- Compact Top Marquee Header -->
+    <header class="top-bar">
+      <h1 class="game-title">WAR</h1>
+      <span class="badge-tag" style="background: var(--gold);">Brawl Nights</span>
+      <span id="weaponStatusBadge" class="badge-tag" style="background: var(--violet);">Rustic Blade</span>
+      <button id="controlsToggleBtn" class="mini-btn" style="background: var(--dirt-light); color: var(--gold); border-top: 3px solid var(--leaf-green);">Controls: ON</button>
+      <button id="soundToggleBtn" class="mini-btn" style="background: var(--cyan); color: var(--ink);">SFX: ON</button>
+      <button id="menuBtn" class="mini-btn" style="background: var(--red); color: var(--parchment);">Title</button>
+    </header>
+
+    <!-- Full-Screen Pixel Game Canvas -->
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- Optional On-Screen Dirt-Styled Bottom-Corner Controls -->
+    <div class="hud-controls-layer" id="onScreenControls">
+      <!-- Bottom-Left: Movement & Weapon Swap -->
+      <div class="dirt-cluster">
+        <div class="cluster-label">
+          <span>Move &amp; Armory</span>
+          <span>A / D / W / E</span>
+        </div>
+        <div class="dpad-row">
+          <button class="dirt-btn" id="btnLeft">
+            ◀ BACK <small>[A]</small>
+          </button>
+          <button class="dirt-btn accent-gold" id="btnJump">
+            ▲ JUMP <small>[W]</small>
+          </button>
+          <button class="dirt-btn" id="btnRight">
+            FWD ▶ <small>[D]</small>
+          </button>
+          <button class="dirt-btn accent-violet" id="btnSwapWeapon">
+            🗡️ SWAP <small>[E]</small>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bottom-Right: Attacks, 10s Flight & 4 Elemental Powers -->
+      <div class="dirt-cluster">
+        <div class="cluster-label">
+          <span>Strikes, Flight &amp; Elements</span>
+          <span id="flyTimerLabel" style="color: var(--cyan);">FLY READY</span>
+        </div>
+        <div class="abilities-row">
+          <button class="dirt-btn accent-gold" id="btnAttack">
+            ⚔️ SLASH <small>[J]</small>
+          </button>
+          <button class="dirt-btn accent-red" id="btnHardStrike">
+            💥 HARD <small>[K]</small>
+          </button>
+          <button class="dirt-btn accent-cyan" id="btnFly" style="grid-column: span 2;">
+            🪽 FLY 10s <small>[L]</small>
+          </button>
+          <button class="dirt-btn accent-red" id="btnFire">
+            🔥 FIRE <small>[1]</small>
+          </button>
+          <button class="dirt-btn accent-cyan" id="btnWater">
+            💧 WATER <small>[2]</small>
+          </button>
+          <button class="dirt-btn accent-violet" id="btnAir">
+            🌪️ AIR <small>[3]</small>
+          </button>
+          <button class="dirt-btn accent-gold" id="btnEarth">
+            🪨 EARTH <small>[4]</small>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================================
+         WELCOME TO BRAWL NIGHTS — VINES & EARTHY TITLE OVERLAY
+         =================================================================== -->
+    <div id="welcomeOverlay" class="welcome-overlay">
+      <div class="vine-frame-card" id="welcomeCard">
+        <div class="vine-garland-top">
+          <span class="lantern-glow">🏮</span>
+          <span>🌿🍃🌱 VINES OF THE ANCIENT CIRCUIT 🌱🍃🌿</span>
+          <span class="lantern-glow">🏮</span>
+        </div>
+
+        <h2 class="brawl-nights-heading">WELCOME TO<br>BRAWL NIGHTS</h2>
+        <div class="brawl-subtitle">WAR • 3 HEARTS • KART TRACKS &amp; ELEMENTAL WEAPONS</div>
+
+        <div>
+          <button id="pressPlayBtn" class="play-btn">PLAY</button>
+        </div>
+
+        <div style="font-size:0.72rem; color:var(--cyan); margin-top:14px; font-weight:bold;">
+          Click PLAY or press ENTER / SPACE to enter the arena!
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Over Victory / Defeat Overlay -->
+    <div id="gameOverOverlay" class="welcome-overlay hidden">
+      <div class="vine-frame-card">
+        <div class="vine-garland-top">
+          <span class="lantern-glow">🏮</span>
+          <span>🌿🍃 BRAWL NIGHTS FINALE 🍃🌿</span>
+          <span class="lantern-glow">🏮</span>
+        </div>
+        <div id="winnerBanner" class="brawl-nights-heading" style="font-size:2.2rem;">
+          PLAYER 1 WINS!
+        </div>
+        <p id="winnerSubtext" style="color:var(--cyan); font-size:0.9rem; margin:10px 0 18px;">
+          Last Warrior Standing in the Grassy Circuit!
+        </p>
+        <button id="playAgainBtn" class="play-btn">PLAY</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================================
+       EASY-TO-TWEAK GAMEPLAY CONFIGURATION (ADJUST NUMBERS HERE!)
+       ========================================================================= */
+    const PLAYER_SPEED = 4.7;          // Horizontal running speed
+    const JUMP_FORCE = -11.5;          // Jump upward velocity (more negative = higher jump)
+    const GRAVITY = 0.48;              // Gravity pull downward per frame
+    const WEAPON_SPAWN_RATE = 400;     // Frames between Mario-Kart weapon item crates (~6.6 sec)
+    const FLY_DURATION_SECONDS = 10;   // Exact 10 seconds of winged flight ability
+    const STARTING_HEARTS = 3;         // Hearts per fighter (lose all 3 = lose!)
+    const BOT_DIFFICULTY = 0.72;       // AI Bot aggression & reaction skill (0.3 = easy, 1.0 = tough)
+
+    /* =========================================================================
+       USER'S FAVORITE ACCENTS + GRASSY DARK GREEN, DARK BROWN & TEAL PALETTE
+       ========================================================================= */
+    const PALETTE = {
+      red: "#a83c32",
+      cyan: "#9de7f2",
+      violet: "#d39df2",
+      gold: "#e5f29d",
+      darkGreen: "#102418",
+      forestGreen: "#1c3d29",
+      grassGreen: "#336e43",
+      brightLeaf: "#4d9458",
+      darkBrown: "#24160e",
+      woodBrown: "#422a1b",
+      richTeal: "#144549",
+      brightTeal: "#246f75",
+      parchment: "#f4eedc",
+      ink: "#0d0906"
+    };
+
+    /* =========================================================================
+       RETRO 16-BIT MARIO-KART INSPIRED WEB AUDIO SYNTHESIZER
+       ========================================================================= */
+    class RetroKartAudio {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) this.ctx = new AudioCtx();
+        }
+        if (this.ctx && this.ctx.state === "suspended") {
+          this.ctx.resume();
+        }
+      }
+
+      playTone(freq, type = "square", duration = 0.12, gainVal = 0.12, slideTo = null, delay = 0) {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime + delay;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now);
+        if (slideTo) {
+          osc.frequency.exponentialRampToValueAtTime(Math.max(20, slideTo), now + duration);
+        }
+
+        gain.gain.setValueAtTime(gainVal, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + duration);
+      }
+
+      playWelcomeChime() {
+        this.playTone(392.0, "triangle", 0.12, 0.11, null, 0);
+        this.playTone(523.25, "triangle", 0.16, 0.12, null, 0.09);
+      }
+
+      // Mario Kart 3-2-1-GO Race Start Beeps
+      playRaceCountdown(isGo = false) {
+        if (isGo) {
+          this.playTone(880, "square", 0.35, 0.16);
+          this.playTone(1174.66, "triangle", 0.35, 0.12);
+        } else {
+          this.playTone(440, "square", 0.18, 0.14);
+        }
+      }
+
+      playJump() {
+        this.playTone(230, "square", 0.14, 0.11, 560);
+      }
+
+      playBoost() {
+        this.playTone(320, "sawtooth", 0.22, 0.12, 920);
+        this.playTone(480, "square", 0.22, 0.08, 1240, 0.05);
+      }
+
+      playItemCrate() {
+        const notes = [523.25, 659.25, 783.99, 1046.5];
+        notes.forEach((n, idx) => {
+          this.playTone(n, "square", 0.09, 0.11, null, idx * 0.055);
+        });
+      }
+
+      playSlash(isHard = false) {
+        if (isHard) {
+          this.playTone(190, "sawtooth", 0.24, 0.18, 55);
+          this.playTone(110, "square", 0.25, 0.16, 42);
+        } else {
+          this.playTone(360, "triangle", 0.12, 0.13, 110);
+        }
+      }
+
+      playElement(element) {
+        if (element === "FIRE") {
+          this.playTone(280, "sawtooth", 0.25, 0.15, 70);
+        } else if (element === "WATER") {
+          this.playTone(420, "sine", 0.28, 0.16, 210);
+          this.playTone(620, "triangle", 0.2, 0.1, 300, 0.05);
+        } else if (element === "AIR") {
+          this.playTone(580, "triangle", 0.24, 0.13, 940);
+        } else if (element === "EARTH") {
+          this.playTone(130, "square", 0.28, 0.18, 45);
+        }
+      }
+
+      playFlyActivate() {
+        this.playTone(440, "triangle", 0.12, 0.12, 660);
+        this.playTone(660, "triangle", 0.18, 0.12, 990, 0.1);
+      }
+
+      playHeartLost() {
+        this.playTone(480, "sawtooth", 0.15, 0.16, 320, 0);
+        this.playTone(340, "sawtooth", 0.15, 0.16, 220, 0.14);
+        this.playTone(220, "sawtooth", 0.28, 0.18, 95, 0.28);
+      }
+
+      playVictory() {
+        const melody = [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5];
+        const times = [0, 0.11, 0.22, 0.34, 0.52, 0.66];
+        melody.forEach((freq, i) => {
+          this.playTone(freq, "square", 0.16, 0.13, null, times[i]);
+        });
+      }
+    }
+
+    const sfx = new RetroKartAudio();
+
+    /* =========================================================================
+       WEAPONS & ELEMENTAL DEFINITIONS
+       ========================================================================= */
+    const WEAPONS = [
+      { id: "SWORD",  name: "Rustic Blade",   reach: 44, damage: 12, knockback: 6.5, color: PALETTE.cyan },
+      { id: "HAMMER", name: "Earth Crusher",  reach: 50, damage: 20, knockback: 9.8, color: PALETTE.red },
+      { id: "SPEAR",  name: "Kart Lance",     reach: 64, damage: 14, knockback: 7.4, color: PALETTE.gold },
+      { id: "STAFF",  name: "Arcane Scepter", reach: 54, damage: 16, knockback: 8.2, color: PALETTE.violet }
+    ];
+
+    const ELEMENTS = {
+      FIRE:  { name: "EMBER",  color: PALETTE.red,    accent: PALETTE.gold },
+      WATER: { name: "TIDE",   color: PALETTE.cyan,   accent: PALETTE.violet },
+      AIR:   { name: "ZEPHYR", color: PALETTE.violet, accent: PALETTE.cyan },
+      EARTH: { name: "TERRA",  color: PALETTE.gold,   accent: PALETTE.red }
+    };
+
+    /* =========================================================================
+       CANVAS & LOGICAL PIXEL RESOLUTION SETUP
+       ========================================================================= */
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const LOGIC_W = 960;
+    const LOGIC_H = 540;
+
+    function resizeCanvas() {
+      canvas.width = LOGIC_W;
+      canvas.height = LOGIC_H;
+      ctx.imageSmoothingEnabled = false;
+    }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    /* =========================================================================
+       GAME STATE, HANGING VINES & GRASSY MARIO KART ARENA LAYOUT
+       ========================================================================= */
+    let gameState = "WELCOME"; // "WELCOME", "COUNTDOWN", "PLAYING", "GAMEOVER"
+    let frameCount = 0;
+    let countdownTimer = 0;
+    let countdownNumber = 3;
+    let screenShake = 0;
+    let showOnScreenControls = true;
+
+    // Grassy Earthy Mario-Kart Checkered Track Platforms
+    const PLATFORMS = [
+      { x: 160, y: 385, w: 640, h: 38, type: "MAIN_TRACK" },
+      { x: 105, y: 270, w: 220, h: 22, type: "FLOATING" },
+      { x: 635, y: 270, w: 220, h: 22, type: "FLOATING" },
+      { x: 375, y: 175, w: 210, h: 20, type: "PODIUM" }
+    ];
+
+    // Mario Kart Chevron Boost Pads on Main Grassy Bridge
+    const BOOST_PADS = [
+      { x: 240, y: 379, w: 54, h: 6, dir: 1 },
+      { x: 666, y: 379, w: 54, h: 6, dir: -1 }
+    ];
+
+    // Procedural Hanging Vines along Ceiling & Platform Undersides
+    const HANGING_VINES = [
+      { x: 45,  topY: 0,   len: 135, phase: 0.2 },
+      { x: 115, topY: 0,   len: 95,  phase: 1.1 },
+      { x: 230, topY: 0,   len: 110, phase: 2.0 },
+      { x: 730, topY: 0,   len: 105, phase: 0.7 },
+      { x: 845, topY: 0,   len: 145, phase: 1.8 },
+      { x: 915, topY: 0,   len: 90,  phase: 2.6 },
+      { x: 140, topY: 292, len: 52,  phase: 0.5 },
+      { x: 280, topY: 292, len: 44,  phase: 1.9 },
+      { x: 675, topY: 292, len: 48,  phase: 1.3 },
+      { x: 815, topY: 292, len: 56,  phase: 2.4 },
+      { x: 415, topY: 195, len: 42,  phase: 0.9 },
+      { x: 545, topY: 195, len: 46,  phase: 2.1 },
+      { x: 220, topY: 423, len: 68,  phase: 0.4 },
+      { x: 480, topY: 423, len: 74,  phase: 1.6 },
+      { x: 740, topY: 423, len: 64,  phase: 2.8 }
+    ];
+
+    let projectiles = [];
+    let itemCrates = [];
+    let particles = [];
+    let floatingTexts = [];
+    let weaponSpawnCounter = 180;
+
+    /* =========================================================================
+       FIGHTER ENTITY CLASS (PLAYER 1 & BOT PLAYER 2)
+       ========================================================================= */
+    class Fighter {
+      constructor(isBot, x, y, elementKey) {
+        this.isBot = isBot;
+        this.spawnX = x;
+        this.spawnY = y;
+        this.x = x;
+        this.y = y;
+        this.w = 28;
+        this.h = 38;
+        this.vx = 0;
+        this.vy = 0;
+        this.facing = isBot ? -1 : 1;
+
+        this.element = elementKey;
+        this.hearts = STARTING_HEARTS;
+        this.damagePct = 0;
+        this.jumpsLeft = 2;
+        this.grounded = false;
+
+        this.weaponIndex = 0;
+        this.attackCooldown = 0;
+        this.attackAnimTimer = 0;
+        this.isHardStrike = false;
+        this.hasHitThisSwing = false;
+
+        this.flyFramesLeft = 0;
+        this.flyCooldown = 0;
+
+        this.elementCooldown = 0;
+        this.invulnFrames = 0;
+        this.walkCycle = 0;
+
+        this.aiThinkTimer = 0;
+        this.aiMoveDir = 0;
+      }
+
+      get weapon() {
+        return WEAPONS[this.weaponIndex];
+      }
+
+      resetPosition() {
+        this.x = this.spawnX;
+        this.y = this.spawnY - 70;
+        this.vx = 0;
+        this.vy = 0;
+        this.damagePct = 0;
+        this.jumpsLeft = 2;
+        this.invulnFrames = 90;
+        this.flyFramesLeft = 0;
+      }
+
+      cycleWeapon(specificIndex = null) {
+        if (specificIndex !== null) {
+          this.weaponIndex = specificIndex % WEAPONS.length;
+        } else {
+          this.weaponIndex = (this.weaponIndex + 1) % WEAPONS.length;
+        }
+        spawnFloatingText(this.x + this.w / 2, this.y - 12, this.weapon.name.toUpperCase(), this.weapon.color);
+        if (!this.isBot) {
+          document.getElementById("weaponStatusBadge").textContent = this.weapon.name;
+        }
+      }
+
+      jump() {
+        if (this.flyFramesLeft > 0) {
+          this.vy = -PLAYER_SPEED * 1.15;
+          return;
+        }
+        if (this.jumpsLeft > 0) {
+          this.vy = JUMP_FORCE;
+          this.jumpsLeft--;
+          this.grounded = false;
+          sfx.playJump();
+          spawnBurst(this.x + this.w / 2, this.y + this.h, PALETTE.gold, 6);
+        }
+      }
+
+      activateFlight() {
+        if (this.flyFramesLeft > 0 || this.flyCooldown > 0) return;
+        this.flyFramesLeft = FLY_DURATION_SECONDS * 60;
+        this.flyCooldown = 180;
+        this.vy = -4;
+        sfx.playFlyActivate();
+        spawnFloatingText(this.x + this.w / 2, this.y - 18, "WINGS OF SKY (10s)!", PALETTE.cyan);
+        spawnBurst(this.x + this.w / 2, this.y + this.h / 2, PALETTE.cyan, 16);
+      }
+
+      meleeAttack(hardStrike = false) {
+        if (this.attackCooldown > 0) return;
+        this.isHardStrike = hardStrike;
+        this.attackAnimTimer = hardStrike ? 18 : 12;
+        this.attackCooldown = hardStrike ? 34 : 18;
+        this.hasHitThisSwing = false;
+
+        if (hardStrike) {
+          this.vx += this.facing * 4.5;
+        }
+        sfx.playSlash(hardStrike);
+      }
+
+      castElement(elementType) {
+        if (this.elementCooldown > 0) return;
+        this.elementCooldown = 36;
+        sfx.playElement(elementType);
+
+        const cx = this.x + this.w / 2 + this.facing * 18;
+        const cy = this.y + this.h / 2;
+
+        if (elementType === "FIRE") {
+          projectiles.push({
+            owner: this,
+            type: "FIRE",
+            x: cx,
+            y: cy - 6,
+            vx: this.facing * 8.4,
+            vy: 0,
+            radius: 10,
+            damage: 14,
+            knockback: 7.5,
+            life: 80,
+            color: PALETTE.red
+          });
+        } else if (elementType === "WATER") {
+          projectiles.push({
+            owner: this,
+            type: "WATER",
+            x: cx,
+            y: cy - 10,
+            vx: this.facing * 6.6,
+            vy: 0.4,
+            radius: 14,
+            damage: 13,
+            knockback: 8.5,
+            life: 90,
+            color: PALETTE.cyan
+          });
+        } else if (elementType === "AIR") {
+          projectiles.push({
+            owner: this,
+            type: "AIR",
+            x: cx,
+            y: cy,
+            vx: this.facing * 7.2,
+            vy: -1.6,
+            radius: 13,
+            damage: 11,
+            knockback: 9.2,
+            life: 75,
+            color: PALETTE.violet
+          });
+        } else if (elementType === "EARTH") {
+          projectiles.push({
+            owner: this,
+            type: "EARTH",
+            x: cx,
+            y: cy - 4,
+            vx: this.facing * 6.0,
+            vy: -2.2,
+            gravity: 0.22,
+            radius: 13,
+            damage: 18,
+            knockback: 10.0,
+            life: 85,
+            color: PALETTE.gold
+          });
+        }
+      }
+
+      takeHit(damage, knockbackBase, dirX, dirY = -0.45, hitColor = PALETTE.gold) {
+        if (this.invulnFrames > 0) return;
+
+        this.damagePct = Math.min(300, this.damagePct + damage);
+        const scale = 1 + (this.damagePct / 75);
+        this.vx = dirX * knockbackBase * scale;
+        this.vy = dirY * knockbackBase * scale;
+        this.grounded = false;
+
+        screenShake = Math.min(12, Math.floor(knockbackBase * 0.9));
+        spawnBurst(this.x + this.w / 2, this.y + this.h / 2, hitColor, 14);
+        spawnFloatingText(this.x + this.w / 2, this.y - 10, `+${damage}%`, hitColor);
+      }
+
+      loseHeart() {
+        this.hearts--;
+        sfx.playHeartLost();
+        screenShake = 14;
+        spawnBurst(this.x + this.w / 2, Math.min(LOGIC_H - 20, this.y), PALETTE.red, 26);
+
+        if (this.hearts <= 0) {
+          endMatch(this.isBot ? "PLAYER 1" : "PLAYER 2 (BOT)");
+        } else {
+          this.resetPosition();
+          spawnFloatingText(this.x + this.w / 2, this.y - 20, "HEART LOST!", PALETTE.red);
+        }
+      }
+
+      update(opponent) {
+        if (this.invulnFrames > 0) this.invulnFrames--;
+        if (this.attackCooldown > 0) this.attackCooldown--;
+        if (this.attackAnimTimer > 0) this.attackAnimTimer--;
+        if (this.elementCooldown > 0) this.elementCooldown--;
+
+        if (this.flyFramesLeft > 0) {
+          this.flyFramesLeft--;
+          if (frameCount % 6 === 0) {
+            spawnBurst(this.x + this.w / 2, this.y + this.h, PALETTE.cyan, 2);
+          }
+        } else if (this.flyCooldown > 0) {
+          this.flyCooldown--;
+        }
+
+        if (this.isBot) {
+          this.runBotAI(opponent);
+        }
+
+        if (this.flyFramesLeft > 0) {
+          this.vy *= 0.86;
+          this.vx *= 0.88;
+        } else {
+          this.vy += GRAVITY;
+          this.vx *= this.grounded ? 0.80 : 0.91;
+        }
+
+        const prevY = this.y;
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (Math.abs(this.vx) > 0.6 && this.grounded) {
+          this.walkCycle += 0.25;
+        } else {
+          this.walkCycle = 0;
+        }
+
+        // Platform Collision
+        this.grounded = false;
+        if (this.vy >= 0) {
+          for (const plat of PLATFORMS) {
+            const withinX = this.x + this.w > plat.x + 4 && this.x < plat.x + plat.w - 4;
+            const crossedTop = prevY + this.h <= plat.y + 10 && this.y + this.h >= plat.y;
+            if (withinX && crossedTop) {
+              this.y = plat.y - this.h;
+              this.vy = 0;
+              this.grounded = true;
+              this.jumpsLeft = 2;
+              break;
+            }
+          }
+        }
+
+        // Mario Kart Boost Pads Check
+        if (this.grounded) {
+          for (const pad of BOOST_PADS) {
+            if (this.x + this.w > pad.x && this.x < pad.x + pad.w && Math.abs((this.y + this.h) - 385) < 6) {
+              this.vx = pad.dir * (PLAYER_SPEED * 2.35);
+              this.facing = pad.dir;
+              if (frameCount % 8 === 0) {
+                sfx.playBoost();
+                spawnBurst(this.x + this.w / 2, this.y + this.h, PALETTE.gold, 6);
+              }
+            }
+          }
+        }
+
+        // Active Melee Hitbox Check
+        if (this.attackAnimTimer > 0 && !this.hasHitThisSwing) {
+          const reach = this.weapon.reach + (this.isHardStrike ? 14 : 0);
+          const hitX = this.facing === 1 ? this.x + this.w : this.x - reach;
+          const hitY = this.y - 4;
+          const hitW = reach;
+          const hitH = this.h + 8;
+
+          if (
+            opponent.x < hitX + hitW &&
+            opponent.x + opponent.w > hitX &&
+            opponent.y < hitY + hitH &&
+            opponent.y + opponent.h > hitY
+          ) {
+            this.hasHitThisSwing = true;
+            const dmg = this.weapon.damage + (this.isHardStrike ? 10 : 0);
+            const kb = this.weapon.knockback + (this.isHardStrike ? 4.2 : 0);
+            opponent.takeHit(dmg, kb, this.facing, this.isHardStrike ? -0.62 : -0.38, this.weapon.color);
+          }
+        }
+
+        // Ring-out Blast Zone Check
+        if (this.y > LOGIC_H + 55 || this.x < -90 || this.x > LOGIC_W + 90) {
+          this.loseHeart();
+        }
+      }
+
+      runBotAI(target) {
+        this.aiThinkTimer--;
+        const dx = target.x - this.x;
+        const dy = target.y - this.y;
+        const dist = Math.hypot(dx, dy);
+
+        if (this.y > 360 && (this.x < 165 || this.x > 795)) {
+          this.aiMoveDir = this.x < LOGIC_W / 2 ? 1 : -1;
+          if (this.vy > 1.5 && this.jumpsLeft > 0) this.jump();
+          if (this.y > 430 && this.flyCooldown === 0) this.activateFlight();
+        } else if (this.aiThinkTimer <= 0) {
+          this.aiThinkTimer = Math.floor(14 / BOT_DIFFICULTY);
+          let goalX = target.x;
+          if (itemCrates.length > 0 && Math.random() < 0.45) {
+            goalX = itemCrates[0].x;
+          }
+          this.aiMoveDir = goalX > this.x + 12 ? 1 : goalX < this.x - 12 ? -1 : 0;
+
+          if (dy < -55 && this.grounded && Math.random() < BOT_DIFFICULTY) {
+            this.jump();
+          }
+        }
+
+        if (this.aiMoveDir !== 0) {
+          this.vx += this.aiMoveDir * (PLAYER_SPEED * 0.24);
+          this.vx = Math.max(-PLAYER_SPEED * 0.92, Math.min(PLAYER_SPEED * 0.92, this.vx));
+          this.facing = this.aiMoveDir;
+        }
+
+        if (dist < this.weapon.reach + 16 && Math.random() < 0.14 * BOT_DIFFICULTY) {
+          this.meleeAttack(target.damagePct > 65 && Math.random() < 0.45);
+        } else if (dist > 130 && dist < 420 && Math.abs(dy) < 55 && Math.random() < 0.035 * BOT_DIFFICULTY) {
+          const powers = ["FIRE", "WATER", "AIR", "EARTH"];
+          this.castElement(powers[Math.floor(Math.random() * powers.length)]);
+        }
+      }
+
+      draw(ctx) {
+        if (this.invulnFrames > 0 && Math.floor(this.invulnFrames / 4) % 2 === 0) return;
+
+        const theme = ELEMENTS[this.element];
+        const px = Math.round(this.x);
+        const py = Math.round(this.y);
+        const bob = Math.round(Math.sin(this.walkCycle) * 2);
+
+        ctx.save();
+
+        // Winged Flight Aura
+        if (this.flyFramesLeft > 0) {
+          const wingFlap = Math.sin(frameCount * 0.45) * 6;
+          ctx.fillStyle = PALETTE.cyan;
+          ctx.fillRect(px - 10, py + 8 + wingFlap, 10, 14);
+          ctx.fillRect(px + this.w, py + 8 + wingFlap, 10, 14);
+          ctx.fillStyle = PALETTE.gold;
+          ctx.fillRect(px - 7, py + 11 + wingFlap, 6, 8);
+          ctx.fillRect(px + this.w + 1, py + 11 + wingFlap, 6, 8);
+        }
+
+        // Pixel Boots
+        ctx.fillStyle = PALETTE.ink;
+        ctx.fillRect(px + 4, py + 30 - bob, 8, 8);
+        ctx.fillRect(px + 16, py + 30 + bob, 8, 8);
+
+        // Pixel Armor Tunic
+        ctx.fillStyle = theme.color;
+        ctx.fillRect(px + 3, py + 14, 22, 18);
+        ctx.strokeStyle = PALETTE.ink;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(px + 3, py + 14, 22, 18);
+
+        // Chest Emblem
+        ctx.fillStyle = theme.accent;
+        ctx.fillRect(px + 10, py + 18, 8, 8);
+
+        // Knight / Kart Helmet Head
+        ctx.fillStyle = PALETTE.parchment;
+        ctx.fillRect(px + 4, py + 1, 20, 14);
+        ctx.strokeRect(px + 4, py + 1, 20, 14);
+
+        // Helmet Crest Plume
+        ctx.fillStyle = theme.color;
+        ctx.fillRect(px + 8, py - 4, 12, 5);
+
+        // Visor Eyes
+        ctx.fillStyle = PALETTE.ink;
+        const eyeOffset = this.facing === 1 ? 13 : 6;
+        ctx.fillRect(px + eyeOffset, py + 5, 4, 4);
+        ctx.fillRect(px + eyeOffset + 5, py + 5, 3, 4);
+
+        // Player Tag Above Head
+        ctx.font = "bold 10px Courier New";
+        ctx.textAlign = "center";
+        ctx.fillStyle = this.isBot ? PALETTE.violet : PALETTE.gold;
+        ctx.fillText(this.isBot ? "P2 BOT" : "P1 YOU", px + this.w / 2, py - 10);
+
+        this.drawWeapon(ctx, px, py);
+        ctx.restore();
+      }
+
+      drawWeapon(ctx, px, py) {
+        const wpn = this.weapon;
+        const handX = this.facing === 1 ? px + this.w - 2 : px + 2;
+        const handY = py + 20;
+        const swinging = this.attackAnimTimer > 0;
+
+        ctx.save();
+        ctx.translate(handX, handY);
+        if (this.facing === -1) ctx.scale(-1, 1);
+
+        if (swinging) {
+          ctx.rotate(this.isHardStrike ? 0.55 : 0.35);
+          ctx.fillStyle = this.isHardStrike ? PALETTE.red : wpn.color;
+          ctx.globalAlpha = 0.65;
+          ctx.fillRect(10, -18, wpn.reach, 34);
+          ctx.globalAlpha = 1;
+        } else {
+          ctx.rotate(-0.45);
+        }
+
+        ctx.fillStyle = PALETTE.woodBrown;
+        ctx.fillRect(-3, -3, 10, 6);
+
+        ctx.fillStyle = wpn.color;
+        if (wpn.id === "SWORD") {
+          ctx.fillRect(7, -3, 28, 6);
+        } else if (wpn.id === "HAMMER") {
+          ctx.fillRect(7, -2, 24, 4);
+          ctx.fillStyle = PALETTE.red;
+          ctx.fillRect(26, -10, 12, 20);
+        } else if (wpn.id === "SPEAR") {
+          ctx.fillRect(7, -2, 42, 4);
+          ctx.fillStyle = PALETTE.gold;
+          ctx.fillRect(46, -4, 8, 8);
+        } else if (wpn.id === "STAFF") {
+          ctx.fillRect(7, -2, 32, 4);
+          ctx.fillStyle = PALETTE.violet;
+          ctx.fillRect(36, -6, 10, 12);
+        }
+
+        ctx.restore();
+      }
+    }
+
+    /* =========================================================================
+       PARTICLES, FLOATING TEXT & MARIO-KART ITEM CRATES
+       ========================================================================= */
+    function spawnBurst(x, y, color, count = 10) {
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x,
+          y,
+          vx: (Math.random() - 0.5) * 6,
+          vy: (Math.random() - 0.8) * 6,
+          size: 3 + Math.floor(Math.random() * 4),
+          color,
+          life: 22 + Math.floor(Math.random() * 14)
+        });
+      }
+    }
+
+    function spawnFloatingText(x, y, text, color) {
+      floatingTexts.push({ x, y, text, color, life: 45 });
+    }
+
+    function spawnItemCrate() {
+      const dropX = 200 + Math.random() * 560;
+      itemCrates.push({
+        x: dropX,
+        y: 24,
+        w: 24,
+        h: 24,
+        vy: 1.5,
+        weaponIdx: Math.floor(Math.random() * WEAPONS.length),
+        bobOffset: Math.random() * Math.PI * 2
+      });
+    }
+
+    /* =========================================================================
+       INPUT HANDLING (KEYBOARD + OPTIONAL ON-SCREEN DIRT BUTTONS)
+       ========================================================================= */
+    const keys = {};
+
+    window.addEventListener("keydown", (e) => {
+      const k = e.key.toLowerCase();
+      keys[k] = true;
+
+      if (gameState === "WELCOME") {
+        if (k === "enter" || k === " ") {
+          e.preventDefault();
+          startMatch();
+        }
+        return;
+      }
+
+      if (gameState !== "PLAYING") return;
+
+      if (k === "w" || k === "arrowup" || k === " ") {
+        e.preventDefault();
+        player1.jump();
+      }
+      if (k === "j" || k === "z") player1.meleeAttack(false);
+      if (k === "k" || k === "x") player1.meleeAttack(true);
+      if (k === "l" || k === "c") player1.activateFlight();
+      if (k === "e") player1.cycleWeapon();
+
+      if (k === "1" || k === "u") player1.castElement("FIRE");
+      if (k === "2" || k === "i") player1.castElement("WATER");
+      if (k === "3" || k === "o") player1.castElement("AIR");
+      if (k === "4" || k === "p") player1.castElement("EARTH");
+    });
+
+    window.addEventListener("keyup", (e) => {
+      keys[e.key.toLowerCase()] = false;
+    });
+
+    function bindHoldButton(id, keyName) {
+      const el = document.getElementById(id);
+      const down = (e) => { e.preventDefault(); keys[keyName] = true; };
+      const up = (e) => { e.preventDefault(); keys[keyName] = false; };
+      el.addEventListener("mousedown", down);
+      el.addEventListener("mouseup", up);
+      el.addEventListener("mouseleave", up);
+      el.addEventListener("touchstart", down, { passive: false });
+      el.addEventListener("touchend", up, { passive: false });
+    }
+
+    bindHoldButton("btnLeft", "a");
+    bindHoldButton("btnRight", "d");
+
+    document.getElementById("btnJump").addEventListener("click", () => {
+      if (gameState === "PLAYING") player1.jump();
+    });
+    document.getElementById("btnAttack").addEventListener("click", () => {
+      if (gameState === "PLAYING") player1.meleeAttack(false);
+    });
+    document.getElementById("btnHardStrike").addEventListener("click", () => {
+      if (gameState === "PLAYING") player1.meleeAttack(true);
+    });
+    document.getElementById("btnFly").addEventListener("click", () => {
+      if (gameState === "PLAYING") player1.activateFlight();
+    });
+    document.getElementById("btnFire").addEventListener("click", () => {
+      if (gameState === "PLAYING") player1.castElement("FIRE");
+    });
+    document.getElementById("btnWater").addEventListener("click", () => {
+      if (gameState === "PLAYING") player1.castElement("WATER");
+    });
+    document.getElementById("btnAir").addEventListener("click", () => {
+      if (gameState === "PLAYING") player1.castElement("AIR");
+    });
+    document.getElementById("btnEarth").addEventListener("click", () => {
+      if (gameState === "PLAYING") player1.castElement("EARTH");
+    });
+    document.getElementById("btnSwapWeapon").addEventListener("click", () => {
+      if (gameState === "PLAYING") player1.cycleWeapon();
+    });
+
+    // Optional On-Screen Controls Toggle
+    document.getElementById("controlsToggleBtn").addEventListener("click", (e) => {
+      showOnScreenControls = !showOnScreenControls;
+      const layer = document.getElementById("onScreenControls");
+      layer.classList.toggle("hidden", !showOnScreenControls);
+      e.target.textContent = showOnScreenControls ? "Controls: ON" : "Controls: OFF";
+      sfx.playJump();
+    });
+
+    /* =========================================================================
+       MATCH LIFECYCLE & WELCOME TO BRAWL NIGHTS INTERACTIONS
+       ========================================================================= */
+    let player1 = new Fighter(false, 260, 320, "FIRE");
+    let player2 = new Fighter(true, 670, 320, "WATER");
+
+    document.getElementById("welcomeOverlay").addEventListener("click", (e) => {
+      if (e.target.id === "welcomeOverlay") {
+        sfx.playWelcomeChime();
+      }
+    });
+
+    function startMatch() {
+      sfx.init();
+      document.getElementById("welcomeOverlay").classList.add("hidden");
+      document.getElementById("gameOverOverlay").classList.add("hidden");
+
+      const allElements = ["FIRE", "WATER", "AIR", "EARTH"];
+      const p1Pick = allElements[Math.floor(Math.random() * allElements.length)];
+      const botElements = allElements.filter((el) => el !== p1Pick);
+      const botPick = botElements[Math.floor(Math.random() * botElements.length)];
+
+      player1 = new Fighter(false, 260, 320, p1Pick);
+      player2 = new Fighter(true, 670, 320, botPick);
+      document.getElementById("weaponStatusBadge").textContent = player1.weapon.name;
+
+      projectiles = [];
+      itemCrates = [];
+      particles = [];
+      floatingTexts = [];
+      weaponSpawnCounter = 160;
+
+      // Mario Kart 3-2-1-GO Countdown
+      gameState = "COUNTDOWN";
+      countdownNumber = 3;
+      countdownTimer = 42;
+      sfx.playRaceCountdown(false);
+    }
+
+    function endMatch(winnerName) {
+      gameState = "GAMEOVER";
+      const overlay = document.getElementById("gameOverOverlay");
+      const banner = document.getElementById("winnerBanner");
+      const sub = document.getElementById("winnerSubtext");
+
+      overlay.classList.remove("hidden");
+      if (winnerName === "PLAYER 1") {
+        banner.textContent = "🏆 BRAWL NIGHTS CHAMPION!";
+        banner.style.color = PALETTE.gold;
+        sub.textContent = "Player 1 conquered the Grassy Kart Arena!";
+        sfx.playVictory();
+      } else {
+        banner.textContent = "💀 DEFEAT — BOT WINS!";
+        banner.style.color = PALETTE.red;
+        sub.textContent = "All 3 hearts lost! Click PLAY for a rematch!";
+      }
+    }
+
+    document.getElementById("pressPlayBtn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      startMatch();
+    });
+    document.getElementById("playAgainBtn").addEventListener("click", startMatch);
+    document.getElementById("menuBtn").addEventListener("click", () => {
+      document.getElementById("welcomeOverlay").classList.remove("hidden");
+      document.getElementById("gameOverOverlay").classList.add("hidden");
+      gameState = "WELCOME";
+      sfx.playWelcomeChime();
+    });
+
+    document.getElementById("soundToggleBtn").addEventListener("click", (e) => {
+      sfx.muted = !sfx.muted;
+      e.target.textContent = sfx.muted ? "SFX: OFF" : "SFX: ON";
+    });
+
+    /* =========================================================================
+       MAIN UPDATE & RENDER LOOP
+       ========================================================================= */
+    function updateGame() {
+      frameCount++;
+
+      if (screenShake > 0) screenShake--;
+
+      if (gameState === "COUNTDOWN") {
+        countdownTimer--;
+        if (countdownTimer <= 0) {
+          countdownNumber--;
+          if (countdownNumber > 0) {
+            countdownTimer = 42;
+            sfx.playRaceCountdown(false);
+          } else {
+            gameState = "PLAYING";
+            sfx.playRaceCountdown(true);
+            spawnFloatingText(LOGIC_W / 2, 145, "GO!!", PALETTE.gold);
+          }
+        }
+        return;
+      }
+
+      if (gameState !== "PLAYING") return;
+
+      // Player 1 Continuous Movement
+      if (keys["a"] || keys["arrowleft"]) {
+        player1.vx -= PLAYER_SPEED * 0.28;
+        player1.facing = -1;
+      }
+      if (keys["d"] || keys["arrowright"]) {
+        player1.vx += PLAYER_SPEED * 0.28;
+        player1.facing = 1;
+      }
+      if (player1.flyFramesLeft > 0) {
+        if (keys["w"] || keys["arrowup"]) player1.vy = -PLAYER_SPEED;
+        if (keys["s"] || keys["arrowdown"]) player1.vy = PLAYER_SPEED;
+      }
+
+      player1.vx = Math.max(-PLAYER_SPEED * 1.4, Math.min(PLAYER_SPEED * 1.4, player1.vx));
+
+      player1.update(player2);
+      player2.update(player1);
+
+      // Update On-Screen Flight Timer Display
+      const flyLabel = document.getElementById("flyTimerLabel");
+      const flyBtn = document.getElementById("btnFly");
+      if (player1.flyFramesLeft > 0) {
+        const secs = (player1.flyFramesLeft / 60).toFixed(1);
+        flyLabel.textContent = `FLYING: ${secs}s`;
+        flyBtn.classList.add("active-fly");
+      } else if (player1.flyCooldown > 0) {
+        flyLabel.textContent = "RECHARGING";
+        flyBtn.classList.remove("active-fly");
+      } else {
+        flyLabel.textContent = "FLY READY";
+        flyBtn.classList.remove("active-fly");
+      }
+
+      // Spawn Mario Kart Weapon Crates
+      weaponSpawnCounter--;
+      if (weaponSpawnCounter <= 0 && itemCrates.length < 2) {
+        spawnItemCrate();
+        weaponSpawnCounter = WEAPON_SPAWN_RATE;
+      }
+
+      // Update Item Crates
+      for (let i = itemCrates.length - 1; i >= 0; i--) {
+        const c = itemCrates[i];
+        c.y += c.vy;
+        for (const plat of PLATFORMS) {
+          if (c.x + c.w > plat.x && c.x < plat.x + plat.w && c.y + c.h >= plat.y && c.y + c.h <= plat.y + 12) {
+            c.y = plat.y - c.h;
+            c.vy = 0;
+          }
+        }
+
+        for (const f of [player1, player2]) {
+          if (f.x < c.x + c.w && f.x + f.w > c.x && f.y < c.y + c.h && f.y + f.h > c.y) {
+            sfx.playItemCrate();
+            f.cycleWeapon(c.weaponIdx);
+            spawnBurst(c.x + 12, c.y + 12, PALETTE.violet, 14);
+            itemCrates.splice(i, 1);
+            break;
+          }
+        }
+      }
+
+      // Update Elemental Projectiles
+      for (let i = projectiles.length - 1; i >= 0; i--) {
+        const p = projectiles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.gravity) p.vy += p.gravity;
+        p.life--;
+
+        if (frameCount % 3 === 0) {
+          spawnBurst(p.x, p.y, p.color, 1);
+        }
+
+        const target = p.owner === player1 ? player2 : player1;
+        if (
+          target.x < p.x + p.radius &&
+          target.x + target.w > p.x - p.radius &&
+          target.y < p.y + p.radius &&
+          target.y + target.h > p.y - p.radius
+        ) {
+          target.takeHit(p.damage, p.knockback, Math.sign(p.vx) || 1, -0.5, p.color);
+          projectiles.splice(i, 1);
+          continue;
+        }
+
+        if (p.life <= 0 || p.x < -40 || p.x > LOGIC_W + 40 || p.y > LOGIC_H + 40) {
+          projectiles.splice(i, 1);
+        }
+      }
+
+      // Update Particles & Floating Text
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const pt = particles[i];
+        pt.x += pt.vx;
+        pt.y += pt.vy;
+        pt.vy += 0.15;
+        pt.life--;
+        if (pt.life <= 0) particles.splice(i, 1);
+      }
+
+      for (let i = floatingTexts.length - 1; i >= 0; i--) {
+        const ft = floatingTexts[i];
+        ft.y -= 0.7;
+        ft.life--;
+        if (ft.life <= 0) floatingTexts.splice(i, 1);
+      }
+    }
+
+    /* =========================================================================
+       GRASSY DARK-GREEN, DARK-BROWN & TEAL BACKGROUND + SWAYING VINES
+       ========================================================================= */
+    function drawBackground() {
+      const grad = ctx.createLinearGradient(0, 0, 0, LOGIC_H);
+      grad.addColorStop(0, PALETTE.richTeal);
+      grad.addColorStop(0.55, PALETTE.darkGreen);
+      grad.addColorStop(1, PALETTE.darkBrown);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, LOGIC_W, LOGIC_H);
+
+      // Glowing Brawl Nights Harvest Moon & Teal Mist Halo
+      ctx.fillStyle = "rgba(36, 111, 117, 0.35)";
+      ctx.fillRect(720, 42, 84, 84);
+      ctx.fillStyle = PALETTE.gold;
+      ctx.fillRect(734, 56, 56, 56);
+      ctx.fillStyle = PALETTE.cyan;
+      ctx.fillRect(744, 66, 36, 36);
+
+      // Distant Dark Brown & Forest Green Ridges
+      ctx.fillStyle = PALETTE.forestGreen;
+      ctx.beginPath();
+      ctx.moveTo(0, 470);
+      ctx.lineTo(150, 265);
+      ctx.lineTo(310, 405);
+      ctx.lineTo(480, 225);
+      ctx.lineTo(660, 395);
+      ctx.lineTo(820, 250);
+      ctx.lineTo(960, 410);
+      ctx.lineTo(960, 540);
+      ctx.lineTo(0, 540);
+      ctx.fill();
+
+      // Ancient Dark-Brown Tree Trunks Framing Left & Right Edges
+      ctx.fillStyle = PALETTE.darkBrown;
+      ctx.fillRect(0, 0, 28, LOGIC_H);
+      ctx.fillRect(LOGIC_W - 28, 0, 28, LOGIC_H);
+      ctx.fillStyle = PALETTE.woodBrown;
+      ctx.fillRect(6, 0, 10, LOGIC_H);
+      ctx.fillRect(LOGIC_W - 16, 0, 10, LOGIC_H);
+
+      // Teal & Gold Firefly Spores Drifting in the Grassy Night
+      for (let i = 0; i < 16; i++) {
+        const fx = ((i * 67 + frameCount * 0.35) % (LOGIC_W - 40)) + 20;
+        const fy = 80 + ((i * 43 + Math.sin(frameCount * 0.04 + i) * 18) % 360);
+        ctx.fillStyle = i % 2 === 0 ? PALETTE.cyan : PALETTE.gold;
+        ctx.fillRect(Math.round(fx), Math.round(fy), 3, 3);
+      }
+
+      // Grassy Meadow Floor Strip at Bottom
+      ctx.fillStyle = PALETTE.darkBrown;
+      ctx.fillRect(0, LOGIC_H - 36, LOGIC_W, 36);
+      ctx.fillStyle = PALETTE.grassGreen;
+      ctx.fillRect(0, LOGIC_H - 44, LOGIC_W, 10);
+      for (let gx = 0; gx < LOGIC_W; gx += 12) {
+        ctx.fillStyle = gx % 24 === 0 ? PALETTE.brightLeaf : PALETTE.brightTeal;
+        ctx.fillRect(gx, LOGIC_H - 50, 4, 6);
+      }
+    }
+
+    function drawHangingVines() {
+      for (const v of HANGING_VINES) {
+        const segments = Math.floor(v.len / 8);
+        for (let s = 0; s < segments; s++) {
+          const sway = Math.round(Math.sin(frameCount * 0.045 + v.phase + s * 0.25) * (s * 0.45));
+          const vx = v.x + sway;
+          const vy = v.topY + s * 8;
+
+          ctx.fillStyle = s % 2 === 0 ? PALETTE.grassGreen : PALETTE.forestGreen;
+          ctx.fillRect(vx, vy, 4, 8);
+
+          if (s % 2 === 1) {
+            ctx.fillStyle = PALETTE.brightLeaf;
+            ctx.fillRect(vx - 6, vy + 2, 6, 4);
+            ctx.fillRect(vx + 4, vy + 3, 6, 4);
+          }
+          if (s === segments - 1) {
+            ctx.fillStyle = v.phase > 1.5 ? PALETTE.cyan : PALETTE.gold;
+            ctx.fillRect(vx - 1, vy + 6, 6, 6);
+          }
+        }
+      }
+    }
+
+    function drawMarioKartPlatforms() {
+      for (const plat of PLATFORMS) {
+        ctx.fillStyle = PALETTE.woodBrown;
+        ctx.fillRect(plat.x, plat.y, plat.w, plat.h);
+
+        ctx.fillStyle = PALETTE.darkBrown;
+        ctx.fillRect(plat.x + 4, plat.y + 11, plat.w - 8, plat.h - 16);
+        ctx.fillStyle = PALETTE.brightTeal;
+        ctx.fillRect(plat.x + 4, plat.y + plat.h - 6, plat.w - 8, 6);
+
+        const tileW = 12;
+        const cols = Math.floor(plat.w / tileW);
+        for (let c = 0; c < cols; c++) {
+          ctx.fillStyle = c % 2 === 0 ? PALETTE.parchment : PALETTE.ink;
+          ctx.fillRect(plat.x + c * tileW, plat.y, tileW, 6);
+          ctx.fillStyle = c % 2 === 0 ? PALETTE.red : PALETTE.gold;
+          ctx.fillRect(plat.x + c * tileW, plat.y + 6, tileW, 4);
+
+          if (c % 3 === 0) {
+            ctx.fillStyle = PALETTE.brightLeaf;
+            ctx.fillRect(plat.x + c * tileW + 2, plat.y - 3, 4, 3);
+          }
+        }
+
+        ctx.strokeStyle = PALETTE.ink;
+        ctx.lineWidth = 3;
+        ctx.strokeRect(plat.x, plat.y, plat.w, plat.h);
+      }
+
+      // Draw Mario Kart Chevron Boost Pads
+      for (const pad of BOOST_PADS) {
+        const flash = Math.floor(frameCount / 6) % 2 === 0;
+        ctx.fillStyle = flash ? PALETTE.cyan : PALETTE.gold;
+        ctx.fillRect(pad.x, pad.y, pad.w, pad.h);
+        ctx.fillStyle = PALETTE.red;
+        for (let x = pad.x + 6; x < pad.x + pad.w - 8; x += 12) {
+          ctx.fillRect(x, pad.y + 1, 6, 4);
+        }
+      }
+    }
+
+    function drawItemCrates() {
+      for (const c of itemCrates) {
+        const hover = Math.sin(frameCount * 0.1 + c.bobOffset) * 2;
+        const cx = Math.round(c.x);
+        const cy = Math.round(c.y + hover);
+
+        const colors = [PALETTE.cyan, PALETTE.violet, PALETTE.gold, PALETTE.red];
+        ctx.fillStyle = colors[Math.floor(frameCount / 8) % colors.length];
+        ctx.fillRect(cx, cy, c.w, c.h);
+
+        ctx.strokeStyle = PALETTE.ink;
+        ctx.lineWidth = 3;
+        ctx.strokeRect(cx, cy, c.w, c.h);
+
+        ctx.fillStyle = PALETTE.ink;
+        ctx.font = "bold 16px Courier New";
+        ctx.textAlign = "center";
+        ctx.fillText("?", cx + c.w / 2, cy + 17);
+      }
+    }
+
+    function drawProjectiles() {
+      for (const p of projectiles) {
+        ctx.save();
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(Math.round(p.x), Math.round(p.y), p.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = PALETTE.ink;
+        ctx.stroke();
+
+        ctx.fillStyle = PALETTE.parchment;
+        ctx.fillRect(Math.round(p.x) - 3, Math.round(p.y) - 3, 6, 6);
+        ctx.restore();
+      }
+    }
+
+    function drawHUD() {
+      drawFighterCard(36, 14, player1, "P1: " + ELEMENTS[player1.element].name, PALETTE.gold);
+      drawFighterCard(LOGIC_W - 246, 14, player2, "BOT: " + ELEMENTS[player2.element].name, PALETTE.violet);
+
+      if (gameState === "COUNTDOWN") {
+        ctx.fillStyle = "rgba(16, 36, 24, 0.58)";
+        ctx.fillRect(0, 0, LOGIC_W, LOGIC_H);
+        ctx.font = "900 76px Courier New";
+        ctx.textAlign = "center";
+        ctx.fillStyle = PALETTE.gold;
+        ctx.fillText(countdownNumber, LOGIC_W / 2, LOGIC_H / 2 + 15);
+        ctx.strokeStyle = PALETTE.red;
+        ctx.lineWidth = 3;
+        ctx.strokeText(countdownNumber, LOGIC_W / 2, LOGIC_H / 2 + 15);
+      }
+    }
+
+    function drawFighterCard(x, y, fighter, label, borderColor) {
+      ctx.fillStyle = "rgba(24, 16, 11, 0.88)";
+      ctx.fillRect(x, y, 210, 62);
+      ctx.strokeStyle = borderColor;
+      ctx.lineWidth = 3;
+      ctx.strokeRect(x, y, 210, 62);
+
+      ctx.font = "bold 12px Courier New";
+      ctx.textAlign = "left";
+      ctx.fillStyle = PALETTE.parchment;
+      ctx.fillText(label, x + 10, y + 17);
+
+      ctx.font = "bold 10px Courier New";
+      ctx.fillStyle = fighter.weapon.color;
+      ctx.fillText(fighter.weapon.name, x + 10, y + 31);
+
+      for (let h = 0; h < STARTING_HEARTS; h++) {
+        const hx = x + 10 + h * 24;
+        const hy = y + 38;
+        drawPixelHeart(hx, hy, h < fighter.hearts ? PALETTE.red : "#443a34");
+      }
+
+      ctx.font = "900 22px Courier New";
+      ctx.textAlign = "right";
+      ctx.fillStyle = fighter.damagePct > 100 ? PALETTE.red : fighter.damagePct > 50 ? PALETTE.gold : PALETTE.cyan;
+      ctx.fillText(`${fighter.damagePct}%`, x + 200, y + 48);
+    }
+
+    function drawPixelHeart(x, y, color) {
+      ctx.fillStyle = color;
+      ctx.fillRect(x + 2, y, 5, 4);
+      ctx.fillRect(x + 11, y, 5, 4);
+      ctx.fillRect(x, y + 3, 18, 6);
+      ctx.fillRect(x + 3, y + 9, 12, 4);
+      ctx.fillRect(x + 6, y + 13, 6, 3);
+    }
+
+    function renderGame() {
+      ctx.save();
+      if (screenShake > 0) {
+        const sx = (Math.random() - 0.5) * screenShake;
+        const sy = (Math.random() - 0.5) * screenShake;
+        ctx.translate(sx, sy);
+      }
+
+      drawBackground();
+      drawHangingVines();
+      drawMarioKartPlatforms();
+      drawItemCrates();
+      player1.draw(ctx);
+      player2.draw(ctx);
+      drawProjectiles();
+
+      for (const pt of particles) {
+        ctx.fillStyle = pt.color;
+        ctx.fillRect(Math.round(pt.x), Math.round(pt.y), pt.size, pt.size);
+      }
+
+      for (const ft of floatingTexts) {
+        ctx.font = "900 13px Courier New";
+        ctx.textAlign = "center";
+        ctx.fillStyle = PALETTE.ink;
+        ctx.fillText(ft.text, Math.round(ft.x) + 1, Math.round(ft.y) + 1);
+        ctx.fillStyle = ft.color;
+        ctx.fillText(ft.text, Math.round(ft.x), Math.round(ft.y));
+      }
+
+      drawHUD();
+      ctx.restore();
+    }
+
+    function gameLoop() {
+      updateGame();
+      renderGame();
+      requestAnimationFrame(gameLoop);
+    }
+
+    window.onload = function () {
+      gameLoop();
+    };
+  </script>
+</body>
+</html>
